@@ -5,7 +5,9 @@
  */
 package Modelo;
 
+import Interfaces.Simulacion;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,7 +32,7 @@ public class Estacion {
         IdEstacion = idEstacion;
     }
 
-    public Estacion() {
+    public Estacion(Simulacion windows) {
         Cola = new ArrayList<Cliente>();
         Servidores = new ArrayList<Servidor>();
 

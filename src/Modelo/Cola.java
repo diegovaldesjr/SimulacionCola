@@ -16,14 +16,15 @@ public class Cola {
     private Cliente Entrante;
     private ArrayList<Estacion> Estaciones;
     private Global datos;
+    
 
-    public Cola(int MaxTMd, int MaxTMm, int NumeroEstaciones, int EMinima, int EMaxima,
+    public Cola(Simulacion windows,int MaxTMd, int MaxTMm, int NumeroEstaciones, int EMinima, int EMaxima,
             int SMinima, int SMaxima) {
         datos = new Global(MaxTMd, MaxTMm, NumeroEstaciones, EMinima, EMaxima,
             SMinima, SMaxima);
         Estaciones = new ArrayList<>();
         for(int i=0; i< datos.NumeroEstaciones; i++)
-            Estaciones.add(new Estacion());
+            Estaciones.add(new Estacion(windows));
         
         Start();
     }
