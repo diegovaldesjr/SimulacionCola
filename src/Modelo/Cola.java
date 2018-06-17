@@ -18,15 +18,19 @@ public class Cola {
     private Global datos;
     
 
-    public Cola(Simulacion windows,int MaxTMd, int MaxTMm, int NumeroEstaciones, int EMinima, int EMaxima,
+    public Cola(Simulacion windows,int MaxTMd, int MaxTMm, int EMinima, int EMaxima,
             int SMinima, int SMaxima) {
-        datos = new Global(MaxTMd, MaxTMm, NumeroEstaciones, EMinima, EMaxima,
+        datos = new Global(MaxTMd, MaxTMm, EMinima, EMaxima,
             SMinima, SMaxima);
         Estaciones = new ArrayList<>();
         for(int i=0; i< datos.NumeroEstaciones; i++)
             Estaciones.add(new Estacion(windows));
         
         Start();
+    }
+
+    public Global getDatos() {
+        return datos;
     }
     
     public void Start(){
@@ -74,7 +78,9 @@ public class Cola {
                         ArrayList<Servidor> servidores = Estaciones.get(i).getServidores();
 
                         for (Servidor servidor: servidores) {
+                            //Arreglar condicion a veces cae en un loop
                             if(servidor.getCliente()!=null && servidor.getCliente().getSalidaEstacion() == datos.DT){
+                                System.out.println("Aqui");
                                 if(Estaciones.get(i).getCola().size() > 0){
                                     datos.DT = datos.TMm + servidor.getCliente().getSalida();
                                 }else{
@@ -121,6 +127,7 @@ public class Cola {
                 System.out.println("----------------------------------------------------------------------------------------------------------");
 
             }
+            System.out.println("Salio primer while");
             datos.TMd = datos.TMd + 1;
         }
 

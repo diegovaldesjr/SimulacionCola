@@ -144,7 +144,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        new Simulacion(2, 10, 1, 1, 5, 1, 20).setVisible(true);
+        new Simulacion(1, 10, 1, 5, 1, 20).setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
