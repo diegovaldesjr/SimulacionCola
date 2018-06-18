@@ -94,12 +94,45 @@ public class Simulacion extends javax.swing.JFrame {
             calcularTiempoPromediosEnColas(Estaciones),
             calcularTiempoPromediosEnServicios(Estaciones),
             calcularTiempoPromediosEnColas(Estaciones));*/
+        float estacion1,estacion2,estacion3,estacion4;
+        try{
+            estacion1 =   cola.calcularTiempoPromediosEnColas(cola.getEstaciones().get(0)) + cola.calcularTiempoPromediosEnServicios(cola.getEstaciones().get(0));
+        }catch(Exception ex){
+            estacion1 = 0;
+        }
+        try{
+            estacion2 =   cola.calcularTiempoPromediosEnColas(cola.getEstaciones().get(1)) + cola.calcularTiempoPromediosEnServicios(cola.getEstaciones().get(1));
+        }catch(Exception ex){
+            estacion2 = 0;
+        }
+        try{
+            estacion3 =   cola.calcularTiempoPromediosEnColas(cola.getEstaciones().get(2)) + cola.calcularTiempoPromediosEnServicios(cola.getEstaciones().get(2));
+        }catch(Exception ex){
+            estacion3 = 0;
+        }
+        try{
+            estacion4 =   cola.calcularTiempoPromediosEnColas(cola.getEstaciones().get(3)) + cola.calcularTiempoPromediosEnServicios(cola.getEstaciones().get(3));
+        }catch(Exception ex){
+            estacion4 = 0;
+        }
+        System.out.println("estacion "+estacion1);
+        System.out.println("estacion "+estacion2);
+        System.out.println("estacion "+estacion3);
+        System.out.println("estacion "+estacion4);
+        
+        
+        float sistema = estacion1 + estacion2 + estacion3 + estacion4;
+        System.out.println("sistema "+sistema);
+        
+        windows.JLSistema.setText(df.format(sistema)+ "min");
+        windows.JLEstacion1.setText(df.format((estacion1/sistema)*100)+ " %");
+        windows.JLEstacion2.setText(df.format((estacion2/sistema)*100)+ " %");
+        windows.JLEstacion3.setText(df.format((estacion3/sistema)*100)+ " %");
+        windows.JLEstacion4.setText(df.format((estacion4/sistema)*100)+ " %");
         windows.JLWq.setText(df.format(cola.calcularTiempoPromediosEnServicios(cola.getEstaciones())));
         windows.JLWs.setText(df.format(cola.calcularTiempoPromediosEnColas(cola.getEstaciones())));
         windows.JLLq.setText(df.format(cola.calcularTiempoPromediosEnColas(cola.getEstaciones())));
         windows.JLLs.setText(df.format(cola.calcularTiempoPromediosEnColas(cola.getEstaciones())));
-        
-        //float estacion1 = cola.
     }
 
     /**

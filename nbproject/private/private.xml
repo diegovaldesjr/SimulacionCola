@@ -3,14 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Servidor.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Estacion.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Cola.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Interfaces/Interfaz.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Probabilidad.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Interfaces/Simulacion.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Cliente.java</file>
-            <file>file:/C:/Users/Diego%20Valdes/Documents/NetBeansProjects/ProyectoModeloCola/src/Modelo/Global.java</file>
+            <file>file:/C:/Users/oscar/Documents/NetBeansProjects/SimulacionCola/src/Interfaces/Simulacion.java</file>
+            <file>file:/C:/Users/oscar/Documents/NetBeansProjects/SimulacionCola/src/Modelo/Servidor.java</file>
+            <file>file:/C:/Users/oscar/Documents/NetBeansProjects/SimulacionCola/src/Modelo/Cola.java</file>
+            <file>file:/C:/Users/oscar/Documents/NetBeansProjects/SimulacionCola/src/Modelo/Estacion.java</file>
+            <file>file:/C:/Users/oscar/Documents/NetBeansProjects/SimulacionCola/src/Modelo/Cliente.java</file>
         </group>
     </open-files>
 </project-private>
