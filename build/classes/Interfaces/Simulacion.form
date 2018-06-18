@@ -102,7 +102,7 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jPanel3" pref="230" max="32767" attributes="0"/>
-                      <Component id="jPanel5" pref="0" max="32767" attributes="0"/>
+                      <Component id="jPanel5" pref="230" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
               </Group>
@@ -182,27 +182,27 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="JLDias5" min="-2" pref="59" max="-2" attributes="0"/>
+                                      <Component id="JLSistema" min="-2" pref="59" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel22" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="JLDias6" min="-2" pref="59" max="-2" attributes="0"/>
+                                      <Component id="JLEstacion1" min="-2" pref="59" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel23" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="JLDias7" min="-2" pref="59" max="-2" attributes="0"/>
+                                      <Component id="JLEstacion2" min="-2" pref="59" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel24" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="JLDias8" min="-2" pref="59" max="-2" attributes="0"/>
+                                      <Component id="JLEstacion3" min="-2" pref="59" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="JLDias9" min="-2" pref="59" max="-2" attributes="0"/>
+                                      <Component id="JLEstacion4" min="-2" pref="59" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -257,27 +257,27 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="JLDias5" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="JLSistema" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="JLDias6" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="JLEstacion1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="JLDias7" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="JLEstacion2" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="JLDias8" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="JLEstacion3" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="JLDias9" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="JLEstacion4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="13" max="32767" attributes="0"/>
                   </Group>
@@ -516,7 +516,7 @@
                 <Property name="text" type="java.lang.String" value="Estacion 4:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="JLDias5">
+            <Component class="javax.swing.JLabel" name="JLSistema">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -527,7 +527,7 @@
                 <Property name="text" type="java.lang.String" value="X"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="JLDias6">
+            <Component class="javax.swing.JLabel" name="JLEstacion1">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -538,7 +538,7 @@
                 <Property name="text" type="java.lang.String" value="X"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="JLDias7">
+            <Component class="javax.swing.JLabel" name="JLEstacion2">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -549,7 +549,7 @@
                 <Property name="text" type="java.lang.String" value="X"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="JLDias8">
+            <Component class="javax.swing.JLabel" name="JLEstacion3">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -560,7 +560,7 @@
                 <Property name="text" type="java.lang.String" value="X"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="JLDias9">
+            <Component class="javax.swing.JLabel" name="JLEstacion4">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>

@@ -32,6 +32,10 @@ public class Cola {
     public Global getDatos() {
         return datos;
     }
+
+    public ArrayList<Estacion> getEstaciones() {
+        return Estaciones;
+    }
     
     public void Start(){
         
@@ -67,6 +71,7 @@ public class Cola {
                     }else{
                         System.out.println("Añadir cliente a Cola");
                         Estaciones.get(0).getCola().add(Entrante);
+                        Entrante.setEntradaEstacion(datos.TMm);
                     }
                     Simulacion.AnunciarEvento("Entrada",Entrante, Estaciones.get(0), datos);
                     Entrante = nuevo;
@@ -88,6 +93,7 @@ public class Cola {
                                 }
 
                                 Cliente saliente = servidor.getCliente();
+                                Estaciones.get(i).getClientesEnColas().add(datos.TMm - saliente.getEntradaEstacion());
                                 servidor.setCliente(null);
                                 Simulacion.AnunciarEvento("Salida",saliente, Estaciones.get(i), datos);
                                 
@@ -105,6 +111,7 @@ public class Cola {
                                         Incrustar(Estaciones.get(i+1), saliente);
                                     }else{
                                         Estaciones.get(i+1).getCola().add(saliente);
+                                        saliente.setEntradaEstacion(datos.TMm);
                                     }
                                 }else{
                                     datos.Salida.add(saliente);
@@ -127,6 +134,12 @@ public class Cola {
                 System.out.println("----------------------------------------------------------------------------------------------------------");
 
             }
+            //float estacion1 =
+            Simulacion.AnunciarCalculo(this);
+            /*calcularTiempoPromediosEnServicios(Estaciones),
+            calcularTiempoPromediosEnColas(Estaciones),
+            calcularTiempoPromediosEnServicios(Estaciones),
+            calcularTiempoPromediosEnColas(Estaciones));*/
             System.out.println("Salio primer while");
             datos.TMd = datos.TMd + 1;
         }
@@ -144,6 +157,186 @@ public class Cola {
         opciones.get(rand).setCliente(cliente);
         cliente.setSalidaEstacion( datos.TMm + cliente.getSalida() );
         //Simulacion.AnunciarEvento("Entrada",Entrante, estacion, datos);
+        estacion.getClientesEnServicio().add(datos.TMm - cliente.getSalida());
+    }
+    
+    
+    public float calcularTiempoPromediosEnColas(Estacion estacion){
+        int promedio = estacion.getClientesEnColas().size();
+        int cuenta = 0;
+        for(int valor: estacion.getClientesEnColas())
+            cuenta+=valor;
+        return (promedio!=0)?cuenta/promedio:0;
+        
+    } 
+    public float calcularTiempoPromediosEnServicios(Estacion estacion){
+        int promedio = estacion.getClientesEnServicio().size();
+        int cuenta = 0;
+        for(int valor: estacion.getClientesEnServicio())
+            cuenta+=valor;
+        return (promedio!=0)?cuenta/promedio:0;
+    }
+    
+    public float calcularTiempoPromediosEnColas(ArrayList<Estacion> estaciones){
+        int promedio = 0;
+        int cuenta = 0;
+        for(Estacion estacion: estaciones){
+            promedio+=estacion.getClientesEnColas().size();
+            for(int valor: estacion.getClientesEnColas())
+                cuenta+=valor;
+        }
+        return (promedio!=0)?cuenta/promedio:0;
+    } 
+    public float calcularTiempoPromediosEnServicios(ArrayList<Estacion> estaciones){
+        int promedio = 0;
+        int cuenta = 0;
+        for(Estacion estacion: estaciones){
+            promedio+=estacion.getClientesEnServicio().size();
+            for(int valor: estacion.getClientesEnServicio())
+                cuenta+=valor;
+        }
+        return (promedio!=0)?cuenta/promedio:0;
+    }
+    public float calcularTiempoPromedioEnColaPorEstacionPorDia(Estacion estacion,int ciclo){
+        
+        int cuenta = 0;
+        if(estacion.getLimiteEnColas().size() == Global.Cero){
+            for(int valor: estacion.getClientesEnColas())
+                cuenta+=valor;
+        }else{
+            if( ciclo == estacion.getLimiteEnColas().size() ){
+                for(int count = estacion.getLimiteEnColas().get(1 - ciclo) ; count<estacion.getLimiteEnColas().size();count++){
+                    cuenta+=estacion.getClientesEnColas().get(count);
+                }
+                return ((estacion.getLimiteEnColas().size() - estacion.getLimiteEnColas().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnColas().size() - estacion.getLimiteEnColas().get(1 - ciclo)):0;
+            }else{
+                for(int count = estacion.getLimiteEnColas().get(1 - ciclo) ; count<estacion.getLimiteEnColas().get(ciclo);count++){
+                    cuenta+=estacion.getClientesEnColas().get(count);
+                }
+                
+                return ((estacion.getLimiteEnColas().get(ciclo) - estacion.getLimiteEnColas().get(1 - ciclo))!=0)?(cuenta/(estacion.getLimiteEnColas().get(ciclo) - estacion.getLimiteEnColas().get(1 - ciclo))):0;
+            }
+        }
+        return Global.Cero;
+    } 
+    
+    public float calcularTiempoPromedioEnServicioPorEstacionPorDia(Estacion estacion,int ciclo){
+        int cuenta = 0;
+        if(estacion.getLimiteEnServicio().size() == Global.Cero){
+            for(int valor: estacion.getClientesEnServicio())
+                cuenta+=valor;
+        }else{
+            if( ciclo == estacion.getLimiteEnServicio().size() ){
+                for(int count = estacion.getLimiteEnServicio().get(1 - ciclo) ; count<estacion.getLimiteEnServicio().size();count++){
+                    cuenta+=estacion.getClientesEnServicio().get(count);
+                }
+                return ((estacion.getLimiteEnServicio().size() - estacion.getLimiteEnServicio().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnServicio().size() - estacion.getLimiteEnServicio().get(1 - ciclo)):0;
+            }else{
+                for(int count = estacion.getLimiteEnServicio().get(1 - ciclo) ; count<estacion.getLimiteEnServicio().get(ciclo);count++){
+                    cuenta+=estacion.getClientesEnServicio().get(count);
+                }
+                return ((estacion.getLimiteEnServicio().get(ciclo) - estacion.getLimiteEnServicio().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnServicio().get(ciclo) - estacion.getLimiteEnServicio().get(1 - ciclo)):0;
+            }
+        }
+        return Global.Cero;
+    } 
+    public float calcularTiempoPromedioDeTodasLasColasPorDia(ArrayList<Estacion> estaciones, int ciclo){
+        int cuenta = 0;
+        
+        for(Estacion estacion: estaciones){
+            cuenta += calcularTiempoPromedioEnColaPorEstacionPorDia(estacion, ciclo);
+        }
+        return cuenta;
+    }
+    public float calcularTiempoPromedioDeTodasLOsServidoresPorDia(ArrayList<Estacion> estaciones, int ciclo){
+        int cuenta = 0;
+        
+        for(Estacion estacion: estaciones){
+            cuenta += calcularTiempoPromedioEnServicioPorEstacionPorDia(estacion, ciclo);
+        }
+        return cuenta;
+    }
+    
+    
+    //*******************************************************************************************************************************************************************
+    public float calcularCantidadPromediosEnColas(ArrayList<Estacion> estaciones){
+        int promedio = 0;
+        int cuenta = 0;
+        for(Estacion estacion: estaciones){
+            promedio+=estacion.getClientesEnColas().size();
+            for(int valor: estacion.getClientesEnColas())
+                cuenta++;
+        }
+        return (promedio!=0)?cuenta/promedio:0;
+    } 
+    public float calcularCantidadPromediosEnServicios(ArrayList<Estacion> estaciones){
+        int promedio = 0;
+        int cuenta = 0;
+        for(Estacion estacion: estaciones){
+            promedio+=estacion.getClientesEnServicio().size();
+            for(int valor: estacion.getClientesEnServicio())
+                cuenta++;
+        }
+        return (promedio!=0)?cuenta/promedio:0;
+    }
+    public float calcularCantidadPromedioEnColaPorEstacionPorDia(Estacion estacion,int ciclo){
+        
+        int cuenta = 0;
+        if(estacion.getLimiteEnColas().size() == Global.Cero){
+            for(int valor: estacion.getClientesEnColas())
+                cuenta++;
+        }else{
+            if( ciclo == estacion.getLimiteEnColas().size() ){
+                for(int count = estacion.getLimiteEnColas().get(1 - ciclo) ; count<estacion.getLimiteEnColas().size();count++){
+                    cuenta++;
+                }
+                return ((estacion.getLimiteEnColas().size() - estacion.getLimiteEnColas().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnColas().size() - estacion.getLimiteEnColas().get(1 - ciclo)):0;
+            }else{
+                for(int count = estacion.getLimiteEnColas().get(1 - ciclo) ; count<estacion.getLimiteEnColas().get(ciclo);count++){
+                    cuenta++;
+                }
+                
+                return ((estacion.getLimiteEnColas().get(ciclo) - estacion.getLimiteEnColas().get(1 - ciclo))!=0)?(cuenta/(estacion.getLimiteEnColas().get(ciclo) - estacion.getLimiteEnColas().get(1 - ciclo))):0;
+            }
+        }
+        return Global.Cero;
+    } 
+    
+    public float calcularCantidadPromedioEnServicioPorEstacionPorDia(Estacion estacion,int ciclo){
+        int cuenta = 0;
+        if(estacion.getLimiteEnServicio().size() == Global.Cero){
+            for(int valor: estacion.getClientesEnServicio())
+                cuenta+=valor;
+        }else{
+            if( ciclo == estacion.getLimiteEnServicio().size() ){
+                for(int count = estacion.getLimiteEnServicio().get(1 - ciclo) ; count<estacion.getLimiteEnServicio().size();count++){
+                    cuenta++;
+                }
+                return ((estacion.getLimiteEnServicio().size() - estacion.getLimiteEnServicio().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnServicio().size() - estacion.getLimiteEnServicio().get(1 - ciclo)):0;
+            }else{
+                for(int count = estacion.getLimiteEnServicio().get(1 - ciclo) ; count<estacion.getLimiteEnServicio().get(ciclo);count++){
+                    cuenta++;
+                }
+                return ((estacion.getLimiteEnServicio().get(ciclo) - estacion.getLimiteEnServicio().get(1 - ciclo))!=0)?cuenta/(estacion.getLimiteEnServicio().get(ciclo) - estacion.getLimiteEnServicio().get(1 - ciclo)):0;
+            }
+        }
+        return Global.Cero;
+    } 
+    public float calcularCantidadPromedioDeTodasLasColasPorDia(ArrayList<Estacion> estaciones, int ciclo){
+        int cuenta = 0;
+        
+        for(Estacion estacion: estaciones){
+            cuenta ++;
+        }
+        return cuenta;
+    }
+    public float calcularCantidadPromedioDeTodasLOsServidoresPorDia(ArrayList<Estacion> estaciones, int ciclo){
+        int cuenta = 0;
+        
+        for(Estacion estacion: estaciones){
+            cuenta ++;
+        }
+        return cuenta;
     }
 
 
