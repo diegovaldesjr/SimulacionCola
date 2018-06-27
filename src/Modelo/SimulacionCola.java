@@ -16,13 +16,12 @@ public class SimulacionCola {
     private ArrayList<Estacion> estaciones;
     private Global datos;
 
-    public SimulacionCola(Simulacion windows,int MaxTMd, int MaxTMm, int EMinima, int EMaxima,
-            int SMinima, int SMaxima) {
-        datos = new Global(MaxTMd, MaxTMm, EMinima, EMaxima,
-            SMinima, SMaxima);
+    public SimulacionCola(Simulacion windows,int MaxTMd, int MaxTMm, int EMaxima,
+            int SMaxima) {
+        datos = new Global(MaxTMd, MaxTMm, EMaxima, SMaxima);
         estaciones = new ArrayList<>();
-        for(int i=0; i< datos.NumeroEstaciones; i++)
-            estaciones.add(new Estacion(windows));
+        for(int i=0; i< EMaxima; i++)
+            estaciones.add(new Estacion(windows, SMaxima));
         
         Start();
     }
@@ -96,10 +95,12 @@ public class SimulacionCola {
             if(servidor.getCliente() == null){
                 opciones.add(servidor);
             }
+            System.out.println("");
         }
         
         int rand = datos.GetInterval(0, opciones.size()-1);
         System.out.println(rand);
+        System.out.println("size"+opciones.size());
         opciones.get(rand).setCliente(cliente);
         cliente.setSalidaEstacion(datos.TMm + cliente.getST());
     }
@@ -111,9 +112,10 @@ public class SimulacionCola {
         
         for(Estacion estacion: estaciones){
             for(Servidor servidor: estacion.getServidores()){
-                if(servidor.getCliente() != null && servidor.getCliente().getSalidaEstacion() == datos.DT){
+                if(servidor.getCliente() != null && servidor.getCliente().getSalidaEstacion() == datos.TMm){
                     estacionAVaciar = estacion;
                     servidorAVaciar = servidor;
+                    System.out.println("Encontro servidor a vaciar");
                 }
             }
         }
@@ -134,7 +136,7 @@ public class SimulacionCola {
                 datos.DT = datos.infinito;
             }
             
-            if(estacionAVaciar.getIdEstacion() < datos.NumeroEstaciones){
+            if(estacionAVaciar.getIdEstacion() < datos.EMaxima){
                 Insertar(estaciones.get(estacionAVaciar.getIdEstacion()), cliente);
             }
             

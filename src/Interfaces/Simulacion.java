@@ -6,7 +6,6 @@
 package Interfaces;
 
 import Modelo.Cliente;
-import Modelo.Cola;
 import Modelo.Estacion;
 import Modelo.Global;
 import Modelo.SimulacionCola;
@@ -24,7 +23,7 @@ public class Simulacion extends javax.swing.JFrame {
     /**
      * Creates new form Simulacion
      */
-    public Simulacion(int MaxTMd, int MaxTMm, int EMinima, int EMaxima, int SMinima, int SMaxima) {
+    public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
         initComponents();
         //Globa
         this.setLocationRelativeTo(null);
@@ -48,10 +47,9 @@ public class Simulacion extends javax.swing.JFrame {
         this.tablaEvento.setModel(modelEvento);
         
         //JLDias.setText();
-        simulacionCola = new SimulacionCola(this,MaxTMd, MaxTMm, EMinima, EMaxima,
-            SMinima, SMaxima); 
+        simulacionCola = new SimulacionCola(this,MaxTMd, MaxTMm, EMaxima, SMaxima); 
         
-        JLEstaciones.setText(String.valueOf(simulacionCola.getDatos().NumeroEstaciones));
+        JLEstaciones.setText(String.valueOf(simulacionCola.getDatos().EMaxima));
         JLMinutos.setText(String.valueOf(simulacionCola.getDatos().MaxTMm));;
         JLDias.setText(String.valueOf(simulacionCola.getDatos().MaxTMd));
     }

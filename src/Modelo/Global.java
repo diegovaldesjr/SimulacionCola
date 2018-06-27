@@ -25,7 +25,6 @@ public class Global {
     public int TMm = 0;//TM normal pero referente a los minutos
     public int MaxTMd = 0;
     public int MaxTMm = 0;
-    public int NumeroEstaciones = 2;
     
     //private static Cliente Entrada;
     public ArrayList<Cliente> Salida = new ArrayList<Cliente>();
@@ -34,13 +33,12 @@ public class Global {
     * las dos siguentes funciones evaluan si la simulacion es continua
     * */
 
-    public Global(int MaxTMd, int MaxTMm, int EMinima, int EMaxima,
-            int SMinima, int SMaxima) {
+    public Global(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
         this.MaxTMd = MaxTMd;
         this.MaxTMm = MaxTMm;
-        this.EMinima = EMinima;
+        this.EMinima = 1;
         this.EMaxima = EMaxima;
-        this.SMinima = SMinima;
+        this.SMinima = 1;
         this.SMaxima = SMaxima;
     }
     
@@ -71,7 +69,7 @@ public class Global {
     }
     public int GetInterval() { return Random(100,0); }
     
-    public int GetInterval(int max, int min) { return Random(max,min); }
+    public int GetInterval(int max, int min) { return (int )(Math.random() * max + min); }
 
    /* public static Cliente getEntrada() { return Entrada; }
     public static void setEntrada(Cliente entrada) { Entrada = entrada; }*/

@@ -10,10 +10,14 @@ package Modelo;
  * @author Diego Valdes
  */
 public class Servidor {
-    private Cliente cliente = null;
+    private Cliente cliente;
 
     public Cliente getCliente() {
         return cliente;
+    }
+
+    public Servidor() {
+        this.cliente = null;
     }
 
     public void setCliente(Cliente cliente) {

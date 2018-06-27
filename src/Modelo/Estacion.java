@@ -32,11 +32,11 @@ public class Estacion {
         IdEstacion = idEstacion;
     }
 
-    public Estacion(Simulacion windows) {
+    public Estacion(Simulacion windows, int MaxServer) {
         Cola = new ArrayList<Cliente>();
         Servidores = new ArrayList<Servidor>();
-
-        int MaxServer = 1;//Integer.parseInt(JOptionPane.showInputDialog(windows,"Por favor ingrese la cantidad de servidores para la estacion: "+(count)+" ","Servidores",JOptionPane.INFORMATION_MESSAGE,null,null,1).toString());
+        this.MaxServer = MaxServer;
+        
         IdEstacion = count++;
 
         for (int i = 0; i < MaxServer; i++) {
