@@ -25,7 +25,7 @@ public class Global {
     public int TMm = 0;//TM normal pero referente a los minutos
     public int MaxTMd = 0;
     public int MaxTMm = 0;
-    public int NumeroEstaciones = 1;
+    public int NumeroEstaciones = 2;
     
     //private static Cliente Entrada;
     public ArrayList<Cliente> Salida = new ArrayList<Cliente>();

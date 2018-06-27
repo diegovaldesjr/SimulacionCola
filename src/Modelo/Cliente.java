@@ -11,28 +11,41 @@ package Modelo;
  */
 public class Cliente {
     private static int CuentaCliente;
-    private int Entrada;
-    private int Salida;
+    //private int Entrada;
+    //private int Salida;
     private int NumeroCliente;
     private int EntradaEstacion;
     private int SalidaEstacion;
+    
+    private int IT;
+    private int ST;
 
     static{
-        CuentaCliente = 0;
+        CuentaCliente = 1;
     }
 
     public Cliente(int AT, int DT) {
-        this.Entrada = AT;
-        this.Salida = DT;
-        NumeroCliente = (++CuentaCliente);
+        this.IT = AT;
+        this.ST = DT;
+        //this.Entrada = AT;
+        //this.Salida = DT;
+        NumeroCliente = CuentaCliente++;
     }
 
-    public int getEntrada() {
-        return Entrada;
+    public int getIT() {
+        return IT;
     }
 
-    public int getSalida() {
-        return Salida;
+    public void setIT(int IT) {
+        this.IT = IT;
+    }
+
+    public int getST() {
+        return ST;
+    }
+
+    public void setST(int ST) {
+        this.ST = ST;
     }
 
     public int getNumeroCliente() {
@@ -42,12 +55,6 @@ public class Cliente {
     public static int getCuentaCliente() {
         return CuentaCliente;
     }
-
-    public void setSalida(int salida) {
-        Salida = salida;
-    }
-
-    public void setEntrada(int entrada) { Entrada = entrada; }
 
     public static void setCuentaCliente(int cuentaCliente) {
         CuentaCliente = cuentaCliente;

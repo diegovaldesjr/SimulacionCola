@@ -20,12 +20,6 @@ public class Estacion {
     private int MaxServer;
     private static int count;
     private int IdEstacion;
-    
-    private ArrayList<Integer> ClientesEnColas;
-    private ArrayList<Integer> ClientesEnServicio;
-    private ArrayList<Integer> LimiteEnColas;
-    private ArrayList<Integer> LimiteEnServicio;
-    
     static {
         count = 1;
     }
@@ -48,23 +42,24 @@ public class Estacion {
         for (int i = 0; i < MaxServer; i++) {
             Servidores.add(new Servidor());
         }
-        
-        ClientesEnColas = new ArrayList<Integer>();
-        ClientesEnServicio = new ArrayList<Integer>();
-        LimiteEnColas = new ArrayList<Integer>();
-        LimiteEnServicio = new ArrayList<Integer>();
-        
     }
 
     public int ServidoresVacio(){
-        System.out.println("Estacion " + IdEstacion + " ServidoresVacio");
-        int count = 0;
-        for (Servidor Servidor: Servidores ) {
-            if(Servidor.getCliente()==null){
+        for (Servidor servidor: Servidores ) {
+            if(servidor.getCliente()!=null){
                 return 0;
             }
         }
         return 1;
+    } 
+    
+    public int ServidorVacio(){
+        for (Servidor servidor: Servidores ) {
+            if(servidor.getCliente()==null){
+                return 1;
+            }
+        }
+        return 0;
     } 
 
     public ArrayList<Cliente> getCola(){
@@ -81,7 +76,6 @@ public class Estacion {
     }
 
     public int CountServidoresOcupados(){
-        System.out.println("Estacion " + IdEstacion + " CountServidoresOcupados");
         int cuenta = 0;
         for (Servidor servidor: Servidores ) {
             if(servidor.getCliente()!=null){cuenta++;}
@@ -98,36 +92,4 @@ public class Estacion {
         return MaxServer;
     }
 
-    public ArrayList<Integer> getClientesEnColas() {
-        return ClientesEnColas;
-    }
-
-    public void setClientesEnColas(ArrayList<Integer> ClientesEnColas) {
-        this.ClientesEnColas = ClientesEnColas;
-    }
-
-    public ArrayList<Integer> getClientesEnServicio() {
-        return ClientesEnServicio;
-    }
-
-    public void setClientesEnServicio(ArrayList<Integer> ClientesEnServicio) {
-        this.ClientesEnServicio = ClientesEnServicio;
-    }
-
-    public ArrayList<Integer> getLimiteEnColas() {
-        return LimiteEnColas;
-    }
-
-    public void setLimiteEnColas(ArrayList<Integer> LimiteEnColas) {
-        this.LimiteEnColas = LimiteEnColas;
-    }
-
-    public ArrayList<Integer> getLimiteEnServicio() {
-        return LimiteEnServicio;
-    }
-
-    public void setLimiteEnServicio(ArrayList<Integer> LimiteEnServicio) {
-        this.LimiteEnServicio = LimiteEnServicio;
-    }
-    
 }
