@@ -53,9 +53,8 @@ public class SimulacionCola {
                     System.out.println("Entrada" + entrante.getIT());
                     System.out.println("Salida" + entrante.getST());
                     
-                    if(estaciones.get(0).ServidorVacio() == 1){
+                    if(estaciones.get(0).ServidoresVacio() == 1){
                         Insertar(estaciones.get(0), entrante);
-                        datos.DT = datos.TMm + entrante.getST();
                     }else{
                         System.out.println("Añadir cliente a Cola");
                         estaciones.get(0).getCola().add(entrante);
@@ -70,7 +69,6 @@ public class SimulacionCola {
                     System.out.println("AT " + datos.AT);
                     System.out.println("DT " + datos.DT);
                     System.out.println("TMm " + datos.TMm);
-                    System.out.println("TMd " + datos.TMd);
                     System.out.println("Event " + datos.Evento);
                     System.out.println("Global.AT < Global.DT " + (datos.AT < datos.DT));
                     System.out.println("Global.AT >= Global.DT " + (datos.AT >= datos.DT));
@@ -88,21 +86,20 @@ public class SimulacionCola {
     }
     
     private void Insertar(Estacion estacion, Cliente cliente){
-        System.out.println("Pasa a ser servido");
         ArrayList<Servidor> opciones = new ArrayList<>();
         
         for(Servidor servidor: estacion.getServidores()){
             if(servidor.getCliente() == null){
                 opciones.add(servidor);
             }
-            System.out.println("");
         }
         
         int rand = datos.GetInterval(0, opciones.size()-1);
-        System.out.println(rand);
-        System.out.println("size"+opciones.size());
+        System.out.println("Entra a estacion "+ estacion.getIdEstacion()+ "el cliente " + cliente.getNumeroCliente());
         opciones.get(rand).setCliente(cliente);
         cliente.setSalidaEstacion(datos.TMm + cliente.getST());
+        System.out.println("Saldra en el TM " + cliente.getSalidaEstacion());
+        datos.DT = datos.TMm + cliente.getST();
     }
     
     private void VaciarServidor(){
@@ -127,23 +124,52 @@ public class SimulacionCola {
             //registrar datos
             
             if(estacionAVaciar.getCola().size() > 0){
-                datos.DT = datos.TMm + cliente.getST();
-                
                 Cliente primeroEnCola = estacionAVaciar.getCola().get(0);
                 estacionAVaciar.getCola().remove(0);
                 Insertar(estacionAVaciar, primeroEnCola);
             }else{
                 datos.DT = datos.infinito;
+                /*int statusCola = revisarColas();
+                
+                if(statusCola == 0){
+                    datos.DT = datos.infinito;
+                }else{
+                    datos.DT = statusCola;
+                }*/
             }
             
             if(estacionAVaciar.getIdEstacion() < datos.EMaxima){
                 Insertar(estaciones.get(estacionAVaciar.getIdEstacion()), cliente);
+                Simulacion.AnunciarEvento("Salida", cliente, estacionAVaciar, datos);
+                Simulacion.AnunciarEvento("Entrada", cliente, estaciones.get(estacionAVaciar.getIdEstacion()), datos);
+            }else{
+                Simulacion.AnunciarEvento("Salida", cliente, estacionAVaciar, datos);
             }
-            
-            Simulacion.AnunciarEvento("Salida", cliente, estacionAVaciar, datos);
+            System.out.println("Sale de la estacion "+ estacionAVaciar.getIdEstacion()+ "el cliente" + cliente.getNumeroCliente());
         }else{
             System.out.println("No encontro servidor a vaciar");
         }
+        System.out.println("----------------------------------------------------------------------------------------------------------");
+                    
+    }
+    
+    public int revisarColas(){
+        int status = datos.infinito;
+        
+        for(Estacion estacion: estaciones){
+            if(estacion.getCola().size() > 0){
+                for(Servidor servidor: estacion.getServidores()){
+                    if(servidor.getCliente() != null && status > servidor.getCliente().getSalidaEstacion()){
+                        status = servidor.getCliente().getSalidaEstacion();
+                    }
+                }
+            }
+        }
+        
+        if(status != datos.infinito)
+            return status;
+        else
+            return 0;
     }
     
 }

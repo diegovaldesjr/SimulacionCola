@@ -51,28 +51,10 @@ public class Estacion {
             }
         }
         return 1;
-    } 
-    
-    public int ServidorVacio(){
-        for (Servidor servidor: Servidores ) {
-            if(servidor.getCliente()==null){
-                return 1;
-            }
-        }
-        return 0;
-    } 
+    }
 
     public ArrayList<Cliente> getCola(){
         return Cola;
-    }
-    public int getCantidad(){
-        int count = 0;
-        for (Servidor serv : Servidores){
-            if (serv.getCliente() == null){
-                count++;
-            }
-        }
-        return count;
     }
 
     public int CountServidoresOcupados(){

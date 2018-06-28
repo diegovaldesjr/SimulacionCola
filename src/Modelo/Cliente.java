@@ -32,6 +32,38 @@ public class Cliente {
         NumeroCliente = CuentaCliente++;
     }
 
+    public static int getCuentaCliente() {
+        return CuentaCliente;
+    }
+
+    public static void setCuentaCliente(int CuentaCliente) {
+        Cliente.CuentaCliente = CuentaCliente;
+    }
+
+    public int getNumeroCliente() {
+        return NumeroCliente;
+    }
+
+    public void setNumeroCliente(int NumeroCliente) {
+        this.NumeroCliente = NumeroCliente;
+    }
+
+    public int getEntradaEstacion() {
+        return EntradaEstacion;
+    }
+
+    public void setEntradaEstacion(int EntradaEstacion) {
+        this.EntradaEstacion = EntradaEstacion;
+    }
+
+    public int getSalidaEstacion() {
+        return SalidaEstacion;
+    }
+
+    public void setSalidaEstacion(int SalidaEstacion) {
+        this.SalidaEstacion = SalidaEstacion;
+    }
+
     public int getIT() {
         return IT;
     }
@@ -48,36 +80,6 @@ public class Cliente {
         this.ST = ST;
     }
 
-    public int getNumeroCliente() {
-        return NumeroCliente;
-    }
-
-    public static int getCuentaCliente() {
-        return CuentaCliente;
-    }
-
-    public static void setCuentaCliente(int cuentaCliente) {
-        CuentaCliente = cuentaCliente;
-    }
-
-    public void setNumeroCliente(int numeroCliente) {
-        NumeroCliente = numeroCliente;
-    }
-
-    public int getEntradaEstacion() {
-        return EntradaEstacion;
-    }
-
-    public void setEntradaEstacion(int entradaEstacion) {
-        EntradaEstacion = entradaEstacion;
-    }
-
-    public int getSalidaEstacion() {
-        return SalidaEstacion;
-    }
-
-    public void setSalidaEstacion(int salidaEstacion) {
-        SalidaEstacion = salidaEstacion;
-    }
+    
 
 }
