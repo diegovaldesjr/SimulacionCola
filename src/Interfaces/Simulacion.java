@@ -25,14 +25,19 @@ public class Simulacion extends javax.swing.JFrame {
      */
     public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
         initComponents();
-        //Globa
+        
+        //Creacion de modelos para mostrar en las interfaces
+        
         this.setLocationRelativeTo(null);
+        
+        //Modelo para mostrar los clientes
         modelCliente = new DefaultTableModel();
         modelCliente.addColumn("Cliente");
         modelCliente.addColumn("Entrada");
         modelCliente.addColumn("Salida");
         this.tablaCliente.setModel(modelCliente);
         
+        //Modelo para mostrar los eventos
         modelEvento = new DefaultTableModel();
         modelEvento.addColumn("# Evento");
         modelEvento.addColumn("Tipo de evento");
@@ -47,13 +52,16 @@ public class Simulacion extends javax.swing.JFrame {
         this.tablaEvento.setModel(modelEvento);
         
         //JLDias.setText();
+        //Iniciar la simulacion
         simulacionCola = new SimulacionCola(this,MaxTMd, MaxTMm, EMaxima, SMaxima); 
         
+        //Mostrar valores en la interfaz
         JLEstaciones.setText(String.valueOf(simulacionCola.getDatos().EMaxima));
         JLMinutos.setText(String.valueOf(simulacionCola.getDatos().MaxTMm));;
         JLDias.setText(String.valueOf(simulacionCola.getDatos().MaxTMd));
     }
     
+    //Funcion que muestra/anuncia a un cliente en la interfaz grafica 
     public static void AnunciarCliente(Cliente cliente){
         String[] datos = new String[]{
             String.valueOf(cliente.getNumeroCliente()),
@@ -64,6 +72,7 @@ public class Simulacion extends javax.swing.JFrame {
         modelCliente.addRow(datos);
     }
     
+    //Funcion que muestra/anuncia un evento en la interfaz grafica
     public static void AnunciarEvento(String evento, Cliente cliente, Estacion estacion, Global global){
         String[] datos = new String[]{
             String.valueOf(++global.Evento),

@@ -58,7 +58,7 @@ public class Global {
     }
 
     private int Random(int max, int min){
-        return min + (int)(Math.random() * ((max - min) + 1));
+        return (int )(Math.random() * max + min);
     }
 
     public int GetTiempoEntreLLegadas(){
@@ -69,7 +69,7 @@ public class Global {
     }
     public int GetInterval() { return Random(100,0); }
     
-    public int GetInterval(int max, int min) { return (int )(Math.random() * max + min); }
+    public int GetInterval(int max, int min) { return this.Random(max, min); }
 
    /* public static Cliente getEntrada() { return Entrada; }
     public static void setEntrada(Cliente entrada) { Entrada = entrada; }*/

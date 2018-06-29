@@ -27,8 +27,7 @@ public class Cliente {
     public Cliente(int AT, int DT) {
         this.IT = AT;
         this.ST = DT;
-        //this.Entrada = AT;
-        //this.Salida = DT;
+
         NumeroCliente = CuentaCliente++;
     }
 

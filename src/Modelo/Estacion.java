@@ -24,6 +24,22 @@ public class Estacion {
         count = 1;
     }
 
+    public Estacion(Simulacion windows, int MaxServer) {
+        //Cola de la estacion
+        Cola = new ArrayList<Cliente>();
+        
+        //Servidores de la estacion
+        Servidores = new ArrayList<Servidor>();
+        this.MaxServer = MaxServer;
+        
+        for (int i = 0; i < MaxServer; i++) {
+            Servidores.add(new Servidor());
+        }
+        
+        //Numero de estacion
+        IdEstacion = count++;
+    }
+    
     public int getIdEstacion() {
         return IdEstacion;
     }
@@ -32,18 +48,8 @@ public class Estacion {
         IdEstacion = idEstacion;
     }
 
-    public Estacion(Simulacion windows, int MaxServer) {
-        Cola = new ArrayList<Cliente>();
-        Servidores = new ArrayList<Servidor>();
-        this.MaxServer = MaxServer;
-        
-        IdEstacion = count++;
-
-        for (int i = 0; i < MaxServer; i++) {
-            Servidores.add(new Servidor());
-        }
-    }
-
+    //Retorna 1 si todos los servidores estan vacios
+    //Retorna 0 si algun servidor llega a estar ocupado
     public int ServidoresVacio(){
         for (Servidor servidor: Servidores ) {
             if(servidor.getCliente()!=null){
@@ -52,11 +58,28 @@ public class Estacion {
         }
         return 1;
     }
+    
+    //Retorna 1 si alguno de los servidores esta vacios
+    //Retorna 0 si todos servidores llegan a estar ocupado
+    public int ServidorVacio(){
+        int estado = 0;
+        for (Servidor servidor: Servidores ) {
+            if(servidor.getCliente()!=null){
+                estado++;
+            }
+        }
+        
+        if(estado == MaxServer)
+            return 0;
+        else
+            return 1;
+    }
 
     public ArrayList<Cliente> getCola(){
         return Cola;
     }
 
+    //Devuelve el numero de servidores que estan atendiendo a un cliente
     public int CountServidoresOcupados(){
         int cuenta = 0;
         for (Servidor servidor: Servidores ) {
