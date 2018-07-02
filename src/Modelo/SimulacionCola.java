@@ -7,11 +7,10 @@ package Modelo;
 
 import Interfaces.Simulacion;
 import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Diego Valdes
- */
+
+
 public class SimulacionCola {
     private ArrayList<Estacion> estaciones;
     private Global datos;
@@ -104,7 +103,7 @@ public class SimulacionCola {
                 }
             }
             System.out.println("Salio primer while");
-            
+            calcular();
             //Actualizo TM de dias
             datos.TMd = datos.TMd + 1;
         }
@@ -217,6 +216,122 @@ public class SimulacionCola {
             return status;
         else
             return 0;
+    }
+    
+    private void calcular() {
+        DefaultTableModel modelo = Simulacion.getModelo();
+        DefaultTableModel clienteSim = Simulacion.getModelCliente();
+        int estacion = 1;
+        
+        ArrayList<Integer>[] group = new ArrayList[datos.EMaxima];
+        for (int i = 0 ; i<datos.EMaxima; i++) {
+            group[i]=new ArrayList<Integer>();
+        }
+        
+        for(int cliente = 0; cliente<Cliente.getCuentaCliente(); cliente++){
+            int count = 0;
+            for (Estacion array : estaciones) {
+                int entrada = 0;
+                int salida = 0;
+
+                for(int ciclo = 1; ciclo<modelo.getRowCount(); ciclo++){
+                    
+                    if( buscarEntrada(modelo,ciclo,array.getIdEstacion(),cliente)!=0){
+                        entrada = buscarEntrada(modelo,ciclo,array.getIdEstacion(),cliente);
+                        break;
+                    }
+                }
+                for(int ciclo = 0; ciclo<modelo.getRowCount(); ciclo++){
+                    if(buscarSalida(modelo,ciclo,array.getIdEstacion(),cliente)!=0){
+                        salida = buscarSalida(modelo,ciclo,array.getIdEstacion(),cliente);
+                        break;
+                    }
+                }
+                if(entrada<salida){
+                    group[array.getIdEstacion()-1].add(salida-entrada);
+                }
+            }
+            
+
+        }
+        int resultado = 0;
+        for(ArrayList<Integer> lugar: group){
+            for(int result: lugar){
+                resultado+=result;
+                System.out.println("resualt "+result);
+                System.out.println("Resultado "+resultado);
+            }
+        }
+
+        int promediador = 0;
+        for(ArrayList<Integer> lugar: group){
+            promediador+=lugar.size();
+            System.out.println("Promediador "+promediador);
+        }
+        
+        try{
+            
+            float W = resultado / promediador;
+            float L = clienteSim.getRowCount();
+            System.out.println(+ resultado+" / " + promediador + " = " + W);
+            System.out.println("cantidad de clientes " + clienteSim.getRowCount());
+            Simulacion.setJLW(String.valueOf(W));
+            Simulacion.setJLL(String.valueOf(L));
+            porcentajeDeTiempo(group,resultado);
+            
+        }catch(Exception e){
+            
+            Simulacion.setJLW("X");
+            Simulacion.setJLL("X");
+            
+        }
+        
+    }
+    
+    private void porcentajeDeTiempo(ArrayList<Integer>[] group,float w){
+        
+        int count = 0;
+        Simulacion.setEstaciones(String.valueOf(w)+" T|Total");
+        
+        for(ArrayList<Integer> parte : group){
+            
+            int cuenta = 0;
+            count++;
+            
+            for(int result: parte){
+                cuenta+=result;
+            }
+            
+            String rest = String.format("%.2f",(cuenta/w)*100)+"%";
+            
+            switch(count){
+                case 1:Simulacion.setEstacion1(rest);
+                    break;
+                case 2:Simulacion.setEstacion2(rest);
+                    break;
+                case 3:Simulacion.setEstacion3(rest);
+                    break;
+                case 4:Simulacion.setEstacion4(rest);
+                    break;   
+            }
+        }  
+    }
+    
+    private int buscarEntrada(DefaultTableModel modelo,int posicion,int estacion, int cliente){
+        if(modelo.getValueAt(posicion, 1).toString()=="Entrada" 
+                && Integer.parseInt(modelo.getValueAt(posicion, 9).toString()) == estacion
+                && Integer.parseInt(modelo.getValueAt(posicion, 2).toString()) == cliente){
+            return Integer.parseInt(modelo.getValueAt(posicion, 4).toString());
+        }
+        return 0;
+    }
+    private int buscarSalida(DefaultTableModel modelo,int posicion,int estacion, int cliente){
+        if(modelo.getValueAt(posicion, 1).toString()=="Salida" 
+                && Integer.parseInt(modelo.getValueAt(posicion, 9).toString()) == estacion
+                && Integer.parseInt(modelo.getValueAt(posicion, 2).toString()) == cliente){
+            return Integer.parseInt(modelo.getValueAt(posicion, 4).toString());
+        }
+        return 0;
     }
     
 }

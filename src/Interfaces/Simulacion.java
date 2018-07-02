@@ -89,6 +89,43 @@ public class Simulacion extends javax.swing.JFrame {
 
         modelEvento.addRow(datos);
     }
+    
+    
+    public static DefaultTableModel getModelo(){
+        return modelEvento;
+    } 
+
+    public static DefaultTableModel getModelCliente() {
+        return modelCliente;
+    }
+
+    public static void setJLL(String JLL) {
+        Simulacion.JLL.setText(JLL);
+    }
+
+    public static void setJLW(String JLW) {
+        Simulacion.JLW.setText(JLW);
+    }
+
+    public static void setEstacion1(String  estacion1) {
+        Simulacion.estacion1.setText( estacion1);
+    }
+
+    public static void setEstacion2(String  estacion2) {
+        Simulacion.estacion2.setText( estacion2);
+    }
+
+    public static void setEstacion3(String  estacion3) {
+        Simulacion.estacion3.setText( estacion3);
+    }
+
+    public static void setEstacion4(String estacion4) {
+        Simulacion.estacion4.setText( estacion4);
+    }
+
+    public static void setEstaciones(String estaciones) {
+        Simulacion.estaciones.setText( estaciones);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -128,11 +165,11 @@ public class Simulacion extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        JLDias5 = new javax.swing.JLabel();
-        JLDias6 = new javax.swing.JLabel();
-        JLDias7 = new javax.swing.JLabel();
-        JLDias8 = new javax.swing.JLabel();
-        JLDias9 = new javax.swing.JLabel();
+        estaciones = new javax.swing.JLabel();
+        estacion1 = new javax.swing.JLabel();
+        estacion2 = new javax.swing.JLabel();
+        estacion3 = new javax.swing.JLabel();
+        estacion4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaCliente = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -146,6 +183,10 @@ public class Simulacion extends javax.swing.JFrame {
         JLLq = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         JLLs = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        JLW = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        JLL = new javax.swing.JLabel();
 
         jLabel3.setText("jLabel3");
 
@@ -263,25 +304,25 @@ public class Simulacion extends javax.swing.JFrame {
         jLabel25.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         jLabel25.setText("Estacion 4:");
 
-        JLDias5.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias5.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias5.setText("X");
+        estaciones.setBackground(new java.awt.Color(255, 255, 255));
+        estaciones.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        estaciones.setText("X");
 
-        JLDias6.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias6.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias6.setText("X");
+        estacion1.setBackground(new java.awt.Color(255, 255, 255));
+        estacion1.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        estacion1.setText("X");
 
-        JLDias7.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias7.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias7.setText("X");
+        estacion2.setBackground(new java.awt.Color(255, 255, 255));
+        estacion2.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        estacion2.setText("X");
 
-        JLDias8.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias8.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias8.setText("X");
+        estacion3.setBackground(new java.awt.Color(255, 255, 255));
+        estacion3.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        estacion3.setText("X");
 
-        JLDias9.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias9.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias9.setText("X");
+        estacion4.setBackground(new java.awt.Color(255, 255, 255));
+        estacion4.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        estacion4.setText("X");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -325,23 +366,23 @@ public class Simulacion extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel21)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JLDias5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(estaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel22)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JLDias6, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(estacion1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel23)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JLDias7, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(estacion2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel24)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JLDias8, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(estacion3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel25)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JLDias9, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(estacion4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -383,23 +424,23 @@ public class Simulacion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(JLDias5))
+                    .addComponent(estaciones))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
-                    .addComponent(JLDias6))
+                    .addComponent(estacion1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel23)
-                    .addComponent(JLDias7))
+                    .addComponent(estacion2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel24)
-                    .addComponent(JLDias8))
+                    .addComponent(estacion3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
-                    .addComponent(JLDias9))
+                    .addComponent(estacion4))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -452,32 +493,54 @@ public class Simulacion extends javax.swing.JFrame {
 
         JLLs.setText("X");
 
+        jLabel26.setText("W :");
+
+        JLW.setText("X");
+
+        jLabel27.setText("L :");
+
+        JLL.setText("X");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLWs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JLWs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JLWq, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(33, 33, 33))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
+                        .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLWq, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(33, 33, 33)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(JLW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLLq, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JLLq, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JLLs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 94, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
+                        .addComponent(jLabel27)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLLs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(0, 94, Short.MAX_VALUE))
+                        .addComponent(JLL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(44, 44, 44))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -497,6 +560,13 @@ public class Simulacion extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel10)
                         .addComponent(JLWs)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel26)
+                    .addComponent(JLW)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel27)
+                        .addComponent(JLL)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -512,7 +582,7 @@ public class Simulacion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE))
                 .addGap(4, 4, 4))
         );
         jPanel1Layout.setVerticalGroup(
@@ -541,17 +611,19 @@ public class Simulacion extends javax.swing.JFrame {
     private javax.swing.JLabel JLDias2;
     private javax.swing.JLabel JLDias3;
     private javax.swing.JLabel JLDias4;
-    private javax.swing.JLabel JLDias5;
-    private javax.swing.JLabel JLDias6;
-    private javax.swing.JLabel JLDias7;
-    private javax.swing.JLabel JLDias8;
-    private javax.swing.JLabel JLDias9;
     private javax.swing.JLabel JLEstaciones;
+    private static javax.swing.JLabel JLL;
     private javax.swing.JLabel JLLq;
     private javax.swing.JLabel JLLs;
     private javax.swing.JLabel JLMinutos;
+    private static javax.swing.JLabel JLW;
     private javax.swing.JLabel JLWq;
     private javax.swing.JLabel JLWs;
+    private static javax.swing.JLabel estacion1;
+    private static javax.swing.JLabel estacion2;
+    private static javax.swing.JLabel estacion3;
+    private static javax.swing.JLabel estacion4;
+    private static javax.swing.JLabel estaciones;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -569,6 +641,8 @@ public class Simulacion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
