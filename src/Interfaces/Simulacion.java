@@ -7,8 +7,8 @@ package Interfaces;
 
 import Modelo.Cliente;
 import Modelo.Estacion;
-import Modelo.Global;
-import Modelo.SimulacionCola;
+import Modelo.Probabilidad;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -18,13 +18,46 @@ import javax.swing.table.DefaultTableModel;
 public class Simulacion extends javax.swing.JFrame {
     public static DefaultTableModel modelCliente;
     public static DefaultTableModel modelEvento;
-    public SimulacionCola simulacionCola;
+    
+    private int TMd;
+    private int TMm;
+    private int MaxTMd;
+    private int MaxTMm;
+    
+    private int EMaxima;
+    private int EMinima;
+    private int SMaxima;
+    private int SMinima;
+    
+    public static final int Cero = 0;
+    public static final int Infinito = 9999;
+    private int Evento;
+    
+    private ArrayList<Estacion> estaciones;
 
     /**
      * Creates new form Simulacion
      */
     public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
         initComponents();
+
+        this.Evento = 0;
+        this.TMd = 0;
+        this.TMm = 0;
+        
+        this.MaxTMd = MaxTMd;
+        this.MaxTMm = MaxTMm;
+        this.EMinima = 1;
+        this.EMaxima = EMaxima;
+        this.SMinima = 1;
+        this.SMaxima = SMaxima;
+        
+        //Inicializar las estaciones
+        estaciones = new ArrayList<>();
+        for(int i=0; i< EMaxima; i++){
+            int numeroEstacion = i+1;
+            estaciones.add(new Estacion(this, SMaxima, numeroEstacion));
+        }
         
         //Creacion de modelos para mostrar en las interfaces
         
@@ -52,17 +85,65 @@ public class Simulacion extends javax.swing.JFrame {
         this.tablaEvento.setModel(modelEvento);
         
         //JLDias.setText();
-        //Iniciar la simulacion
-        simulacionCola = new SimulacionCola(this,MaxTMd, MaxTMm, EMaxima, SMaxima); 
         
         //Mostrar valores en la interfaz
-        JLEstaciones.setText(String.valueOf(simulacionCola.getDatos().EMaxima));
-        JLMinutos.setText(String.valueOf(simulacionCola.getDatos().MaxTMm));;
-        JLDias.setText(String.valueOf(simulacionCola.getDatos().MaxTMd));
+        JLEstaciones.setText(String.valueOf(EMaxima));
+        JLMinutos.setText(String.valueOf(MaxTMm));;
+        JLDias.setText(String.valueOf(MaxTMd));
+    
+        //Iniciar la simulacion
+        Start();
     }
     
+    private void Start(){
+        while(TMd < MaxTMd){
+            while(TMm < MaxTMm /*&& clienteEnSistema()*/){
+                for(Estacion estacion: estaciones){
+                    estacion.simulacionCola();
+                }
+                System.out.println(TMm);
+            }
+            System.out.println("Chao");
+            System.out.println(TMm);
+            this.TMd++;
+        }
+    }
+    
+    //Si aun hay clientes en el sistema
+    private boolean clienteEnSistema(){
+        return true;
+    }
+    
+    public Cliente pedirCliente(){
+        return new Cliente(Probabilidad.TiempoEntreLlegadas(this.GetInterval()), Probabilidad.TiempoPrimeraEstacion(this.GetInterval()));
+    }
+    
+    public void avanzarCliente(Cliente cliente, int numeroEstacion){
+        //Si la estacion la cual el cliente esta saliendo no es la ultima
+        //Pasa a la siguiente
+        if(numeroEstacion < EMaxima){
+            int siguiente = numeroEstacion;
+            estaciones.get(siguiente).Insertar(cliente, false);
+        }
+    }
+    
+    private int Random(int max, int min){
+        return (int )(Math.random() * max + min);
+    }
+
+    public int GetTiempoEntreLLegadas(){
+        return Random(EMaxima,EMinima);
+    }
+    public int GetTiempoEntreSalidas(){
+        return Random(SMaxima,SMinima);
+    }
+    
+    public int GetInterval() { return Random(100,0); }
+    
+    public int GetInterval(int max, int min) { return this.Random(max, min); }
+    
     //Funcion que muestra/anuncia a un cliente en la interfaz grafica 
-    public static void AnunciarCliente(Cliente cliente){
+    public void AnunciarCliente(Cliente cliente){
         String[] datos = new String[]{
             String.valueOf(cliente.getNumeroCliente()),
             String.valueOf(cliente.getIT()),
@@ -73,23 +154,39 @@ public class Simulacion extends javax.swing.JFrame {
     }
     
     //Funcion que muestra/anuncia un evento en la interfaz grafica
-    public static void AnunciarEvento(String evento, Cliente cliente, Estacion estacion, Global global){
+    public void AnunciarEvento(String evento, Cliente cliente, Estacion estacion){
         String[] datos = new String[]{
-            String.valueOf(++global.Evento),
+            String.valueOf(++Evento),
             evento,
             String.valueOf(cliente.getNumeroCliente()),
-            String.valueOf(global.TMd),
-            String.valueOf(global.TMm),
-            String.valueOf(estacion.CountServidoresOcupados()),
+            String.valueOf(TMd),
+            String.valueOf(TMm),
+            String.valueOf(estacion.servidoresOcupados()),
             String.valueOf(estacion.getCola().size()),
-            String.valueOf(global.AT),
-            String.valueOf(global.DT),
-            String.valueOf(estacion.getIdEstacion())
+            String.valueOf(estacion.getAT()),
+            String.valueOf(estacion.getDT()),
+            String.valueOf(estacion.getNumeroEstacion())
         };
 
         modelEvento.addRow(datos);
     }
-    
+    //
+
+    public int getTMm() {
+        return TMm;
+    }
+
+    public void setTMm(int TMm) {
+        this.TMm = TMm;
+    }
+
+    public int getMaxTMm() {
+        return MaxTMm;
+    }
+
+    public void setMaxTMm(int MaxTMm) {
+        this.MaxTMm = MaxTMm;
+    }
     
     public static DefaultTableModel getModelo(){
         return modelEvento;
@@ -99,6 +196,7 @@ public class Simulacion extends javax.swing.JFrame {
         return modelCliente;
     }
 
+    /*
     public static void setJLL(String JLL) {
         Simulacion.JLL.setText(JLL);
     }
@@ -124,8 +222,8 @@ public class Simulacion extends javax.swing.JFrame {
     }
 
     public static void setEstaciones(String estaciones) {
-        Simulacion.estaciones.setText( estaciones);
-    }
+        Simulacion.estaciones.setText(estaciones);
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,11 +263,11 @@ public class Simulacion extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        estaciones = new javax.swing.JLabel();
         estacion1 = new javax.swing.JLabel();
         estacion2 = new javax.swing.JLabel();
         estacion3 = new javax.swing.JLabel();
         estacion4 = new javax.swing.JLabel();
+        porcentajeSistema = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaCliente = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -304,10 +402,6 @@ public class Simulacion extends javax.swing.JFrame {
         jLabel25.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         jLabel25.setText("Estacion 4:");
 
-        estaciones.setBackground(new java.awt.Color(255, 255, 255));
-        estaciones.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        estaciones.setText("X");
-
         estacion1.setBackground(new java.awt.Color(255, 255, 255));
         estacion1.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         estacion1.setText("X");
@@ -323,6 +417,10 @@ public class Simulacion extends javax.swing.JFrame {
         estacion4.setBackground(new java.awt.Color(255, 255, 255));
         estacion4.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         estacion4.setText("X");
+
+        porcentajeSistema.setBackground(new java.awt.Color(255, 255, 255));
+        porcentajeSistema.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        porcentajeSistema.setText("X");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -364,14 +462,6 @@ public class Simulacion extends javax.swing.JFrame {
                             .addComponent(jLabel17)
                             .addComponent(jLabel20)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel21)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel22)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estacion1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel23)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(estacion2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -382,7 +472,15 @@ public class Simulacion extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel25)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estacion4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(estacion4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel22)
+                                    .addComponent(jLabel21))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(porcentajeSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(estacion1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -424,7 +522,7 @@ public class Simulacion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(estaciones))
+                    .addComponent(porcentajeSistema))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
@@ -561,12 +659,13 @@ public class Simulacion extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addComponent(JLWs)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel26)
-                    .addComponent(JLW)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel27)
-                        .addComponent(JLL)))
+                        .addComponent(JLL))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel26)
+                        .addComponent(JLW)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -623,7 +722,6 @@ public class Simulacion extends javax.swing.JFrame {
     private static javax.swing.JLabel estacion2;
     private static javax.swing.JLabel estacion3;
     private static javax.swing.JLabel estacion4;
-    private static javax.swing.JLabel estaciones;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -655,6 +753,7 @@ public class Simulacion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private static javax.swing.JLabel porcentajeSistema;
     private javax.swing.JTable tablaCliente;
     private javax.swing.JTable tablaEvento;
     // End of variables declaration//GEN-END:variables
