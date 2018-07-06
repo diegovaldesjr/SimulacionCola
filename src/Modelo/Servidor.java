@@ -9,6 +9,7 @@ package Modelo;
  *
  * @author Diego Valdes
  */
+
 public class Servidor {
     private Cliente cliente;
 

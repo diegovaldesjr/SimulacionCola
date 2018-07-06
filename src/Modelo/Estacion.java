@@ -7,6 +7,7 @@ package Modelo;
 
 import Interfaces.Simulacion;
 import static Interfaces.Simulacion.Cero;
+import Interfaces.VisorEstacion;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -25,18 +26,21 @@ public class Estacion {
     private int MaxServer;
     private int NumeroEstacion;
     
-    private Simulacion s;
+    private static Simulacion s;
+    private VisorEstacion visor;
     
     Cliente entrante;
     Cliente nuevo;
+    
     private int nClientes;
     private int nClientesCola;
     
-
-    public Estacion(Simulacion s, int MaxServer, int NumeroEstacion) {
-        this.s = s;
+    static{s = Simulacion.simulacion;}
+    
+    public Estacion( VisorEstacion visor, int MaxServer, int NumeroEstacion) {
         AT = 0;
         DT = Simulacion.Infinito;
+        this.visor = visor;
         //Cola de la estacion
         Cola = new ArrayList<Cliente>();
         
@@ -61,7 +65,7 @@ public class Estacion {
         //Solo se generan cliente para entrar en la primera estacion
         if(AT < DT && NumeroEstacion == 1 && s.getTMm() < s.getMaxTMm()){
             //Anuncia al cliente a entrar en el sistema
-            s.AnunciarCliente(entrante);
+            visor.AnunciarCliente(entrante);
             
             //Actualiza TM
             s.setTMm(AT);
@@ -132,16 +136,19 @@ public class Estacion {
         //nuevo tiene que pedir el proximo a salir de la estacion anterior
         
         //Actualizo AT
+        System.out.println("################################################"+s.getTMm());
+        System.out.println("################################################"+nuevo.getIT());
+        
         AT = s.getTMm() + nuevo.getIT();
 
         //Anuncio evento de entrada
         if(!clienteEnCola)
-            s.AnunciarEvento("Entrada",cliente, this);
+            visor.AnunciarEvento("Entrada",cliente, this,s);
         
         System.out.println("Entrada "+entrante.getIT());
         System.out.println("Salida "+entrante.getST());
-        System.out.println("Entrada sig"+nuevo.getIT());
-        System.out.println("Salida sig"+nuevo.getST());
+        System.out.println("Entrada sig "+nuevo.getIT());
+        System.out.println("Salida sig "+nuevo.getST());
         System.out.println("AT "+AT);
         System.out.println("DT "+DT);
         System.out.println("TM "+s.getTMm());
@@ -210,7 +217,7 @@ public class Estacion {
                 //Actualizar DT a infito para que llegue otro cliente en la siguiente iteracion
                 DT = Simulacion.Infinito;
             }
-            s.AnunciarEvento("Salida", cliente, this);
+            visor.AnunciarEvento("Salida", cliente, this,s);
             
             //s.AnunciarEvento("Salida", cliente, this);
             s.avanzarCliente(cliente, NumeroEstacion);
