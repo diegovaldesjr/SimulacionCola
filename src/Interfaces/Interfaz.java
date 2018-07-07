@@ -145,7 +145,8 @@ public class Interfaz extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Inicializa la interfaz que mostrara la simulacion, aqui iran las entradas de la
         //Interfaz anterior
-        new Simulacion(1, 60, 1, 1).setVisible(true);
+        Simulacion simula = new Simulacion(1, 10000, 1, 5);
+        simula.run();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

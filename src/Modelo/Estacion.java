@@ -229,6 +229,9 @@ public class Estacion {
         }
         
     }
+    public void Calcular() {
+        visor.CalcularTodo();
+    }
     
     public int servidoresOcupados(){
         int cuenta = 0;
@@ -256,5 +259,16 @@ public class Estacion {
     public int getDT() {
         return DT;
     }
+
+    public ArrayList<Servidor> getServidores() {
+        return Servidores;
+    }
+
+    public int getnClientesCola() {
+        return nClientesCola;
+    }
+
+    
+    
 
 }

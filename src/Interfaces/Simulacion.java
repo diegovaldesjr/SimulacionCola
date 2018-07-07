@@ -8,6 +8,7 @@ package Interfaces;
 import Modelo.Cliente;
 import Modelo.Estacion;
 import Modelo.Probabilidad;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
@@ -16,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Diego Valdes
  */
-public class Simulacion extends javax.swing.JFrame {
+public class Simulacion extends javax.swing.JFrame implements Runnable{
     public static DefaultTableModel modelCliente;
     public static DefaultTableModel modelEvento;
     
@@ -41,6 +42,7 @@ public class Simulacion extends javax.swing.JFrame {
      * Creates new form Simulacion
      */
     public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
+
         Simulacion.simulacion = this;
         initComponents();
 
@@ -55,7 +57,8 @@ public class Simulacion extends javax.swing.JFrame {
         this.SMinima = 1;
         this.SMaxima = SMaxima;
         
-        //Inicializar las estaciones
+        //Inicializar las estaciones y de las interfaces respectivas
+        
         estaciones = new ArrayList<>();
         for(int i=0; i< EMaxima; i++){
             int numeroEstacion = i+1;
@@ -70,10 +73,16 @@ public class Simulacion extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
 
         //Iniciar la simulacion
+        setVisible(true);
+    }
+    
+    @Override
+    public void run() {
         Start();
     }
-
+    
     private void Start(){
+        int instancia = 0;
         while(TMd < MaxTMd){
             while(TMm < MaxTMm /*&& clienteEnSistema()*/){
                 for(Estacion estacion: estaciones){
@@ -81,9 +90,16 @@ public class Simulacion extends javax.swing.JFrame {
                 }
                 System.out.println(TMm);
             }
+            if(instancia == 0){
+                setVisible(true);
+                instancia++;
+            }
             System.out.println("Chao");
             System.out.println(TMm);
             this.TMd++;
+            for(Estacion estacion : estaciones){
+                estacion.Calcular();
+            }
         }
     }
     
@@ -193,7 +209,7 @@ public class Simulacion extends javax.swing.JFrame {
         TabPanelSimulacion = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1040, 600));
+        setMinimumSize(new java.awt.Dimension(1300, 600));
         getContentPane().add(TabPanelSimulacion, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -203,5 +219,7 @@ public class Simulacion extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane TabPanelSimulacion;
     // End of variables declaration//GEN-END:variables
+
+    
 
 }

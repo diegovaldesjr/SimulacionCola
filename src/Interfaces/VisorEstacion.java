@@ -5,18 +5,23 @@ import static Interfaces.Simulacion.modelCliente;
 import static Interfaces.Simulacion.modelEvento;
 import Modelo.Cliente;
 import Modelo.Estacion;
+import Modelo.Servidor;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
  
 public class VisorEstacion extends javax.swing.JPanel {
  
-    private DefaultTableModel ModelCliente;
+    private DefaultTableModel ModelClientes;
     private DefaultTableModel ModelEventos;
+    private DefaultTableModel ModelResultados;
     private int Evento;
     private ArrayList<Float> promedioTiempoEnCola = new ArrayList<Float>();
     private ArrayList<Float> promedioTiempoEnServicio = new ArrayList<Float>();
+    private float promedioPersornasEnCola;
+    private float promedioPersornasEnServicio;
     private Estacion estacion;
     
     
@@ -25,32 +30,9 @@ public class VisorEstacion extends javax.swing.JPanel {
         
         this.estacion = estacion;
         Evento = 0;
-        
-        //Modelo para mostrar los clientes
-        modelCliente = new DefaultTableModel();
-        modelCliente.addColumn("Cliente");
-        modelCliente.addColumn("Entrada");
-        modelCliente.addColumn("Salida");
-        this.tablaCliente.setModel(modelCliente);
-        ModelCliente = (DefaultTableModel)this.tablaCliente.getModel();
-        
-        //Modelo para mostrar los eventos
-        modelEvento = new DefaultTableModel();
-        modelEvento.addColumn("# Evento");
-        modelEvento.addColumn("Tipo de evento");
-        modelEvento.addColumn("# Cliente");
-        modelEvento.addColumn("TMd");
-        modelEvento.addColumn("TMm");
-        modelEvento.addColumn("SS");
-        modelEvento.addColumn("WL");
-        modelEvento.addColumn("AT");
-        modelEvento.addColumn("DT");
-        this.tablaEvento.setModel(modelEvento);
-        ModelEventos = (DefaultTableModel)this.tablaEvento.getModel();
-        
-        //JLDias.setText();
-        
-        //Mostrar valores en la interfaz
+        initTablaClientes();
+        initTablaEventos();
+        initTablaResultados();
         JLEstaciones.setText(String.valueOf(EMaxima));
         JLMinutos.setText(String.valueOf(MaxTMm));;
         JLDias.setText(String.valueOf(MaxTMd));
@@ -68,7 +50,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         JLDias = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        JLDias1 = new javax.swing.JLabel();
+        JLClientesNoEsperan = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         JLDias2 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -76,37 +58,15 @@ public class VisorEstacion extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         JLDias4 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        estacion1 = new javax.swing.JLabel();
-        estacion2 = new javax.swing.JLabel();
-        estacion3 = new javax.swing.JLabel();
-        estacion4 = new javax.swing.JLabel();
-        porcentajeSistema = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablaResultados = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaCliente = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaEvento = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        JLWq = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        JLWs = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
-        JLW = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        JLL = new javax.swing.JLabel();
-        JLLs = new javax.swing.JLabel();
-        JLLq = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setPreferredSize(new java.awt.Dimension(1127, 622));
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -138,9 +98,9 @@ public class VisorEstacion extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         jLabel7.setText("Cant. Cliente que no esperan:");
 
-        JLDias1.setBackground(new java.awt.Color(255, 255, 255));
-        JLDias1.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        JLDias1.setText("X");
+        JLClientesNoEsperan.setBackground(new java.awt.Color(255, 255, 255));
+        JLClientesNoEsperan.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        JLClientesNoEsperan.setText("X");
 
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
@@ -170,49 +130,18 @@ public class VisorEstacion extends javax.swing.JPanel {
         JLDias4.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         JLDias4.setText("X");
 
-        jLabel20.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel20.setFont(new java.awt.Font("Consolas", 1, 12)); // NOI18N
-        jLabel20.setText("Porcentaje utilizacion");
+        tablaResultados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
 
-        jLabel21.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel21.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        jLabel21.setText("Sistema:");
-
-        jLabel22.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel22.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        jLabel22.setText("Estacion 1:");
-
-        jLabel23.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel23.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        jLabel23.setText("Estacion 2:");
-
-        jLabel24.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel24.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        jLabel24.setText("Estacion 3:");
-
-        jLabel25.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel25.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        jLabel25.setText("Estacion 4:");
-
-        estacion1.setBackground(new java.awt.Color(255, 255, 255));
-        estacion1.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        estacion1.setText("X");
-
-        estacion2.setBackground(new java.awt.Color(255, 255, 255));
-        estacion2.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        estacion2.setText("X");
-
-        estacion3.setBackground(new java.awt.Color(255, 255, 255));
-        estacion3.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        estacion3.setText("X");
-
-        estacion4.setBackground(new java.awt.Color(255, 255, 255));
-        estacion4.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        estacion4.setText("X");
-
-        porcentajeSistema.setBackground(new java.awt.Color(255, 255, 255));
-        porcentajeSistema.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        porcentajeSistema.setText("X");
+            }
+        ));
+        jScrollPane4.setViewportView(tablaResultados);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -221,6 +150,7 @@ public class VisorEstacion extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -246,34 +176,12 @@ public class VisorEstacion extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(JLDias4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel20)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel23)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estacion2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel24)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estacion3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel25)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(estacion4, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel22)
-                                    .addComponent(jLabel21))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(porcentajeSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(estacion1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 126, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(JLDias1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(JLClientesNoEsperan, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -294,7 +202,7 @@ public class VisorEstacion extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(JLDias1))
+                    .addComponent(JLClientesNoEsperan))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -309,29 +217,9 @@ public class VisorEstacion extends javax.swing.JPanel {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(JLDias4))
-                .addGap(40, 40, 40)
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(porcentajeSistema))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel22)
-                    .addComponent(estacion1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23)
-                    .addComponent(estacion2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel24)
-                    .addComponent(estacion3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25)
-                    .addComponent(estacion4))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(200, 500));
@@ -363,114 +251,6 @@ public class VisorEstacion extends javax.swing.JPanel {
         ));
         jScrollPane2.setViewportView(tablaEvento);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setToolTipText("");
-        jPanel3.setPreferredSize(new java.awt.Dimension(234, 34));
-
-        jLabel8.setText("Wq :");
-
-        JLWq.setText("X");
-
-        jLabel10.setText("Ws :");
-
-        JLWs.setText("X");
-
-        jLabel26.setText("W :");
-
-        JLW.setText("X");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel26)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLW, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLWq, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLWs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(JLWq))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(JLWs))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel26)
-                    .addComponent(JLW))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel18.setText("Ls :");
-
-        jLabel27.setText("L :");
-
-        JLL.setText("X");
-
-        JLLs.setText("X");
-
-        JLLq.setText("X");
-
-        jLabel16.setText("Lq :");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel27)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLLq, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(JLLs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(JLLq))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(JLLs))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel27)
-                    .addComponent(JLL))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -481,35 +261,61 @@ public class VisorEstacion extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public Estacion getEstacion() {
-        return estacion;
+    public void initTablaEventos(){
+        //Modelo para mostrar los clientes
+        DefaultTableModel modelCliente = new DefaultTableModel();
+        modelCliente.addColumn("Cliente");
+        modelCliente.addColumn("Entrada");
+        modelCliente.addColumn("Salida");
+        this.tablaCliente.setModel(modelCliente);
+        ModelClientes = (DefaultTableModel)this.tablaCliente.getModel();
     }
-
+    public void initTablaClientes(){
+        //Modelo para mostrar los eventos
+        DefaultTableModel modelEvento = new DefaultTableModel();
+        modelEvento.addColumn("# Evento");
+        modelEvento.addColumn("Tipo de evento");
+        modelEvento.addColumn("# Cliente");
+        modelEvento.addColumn("TMd");
+        modelEvento.addColumn("TMm");
+        modelEvento.addColumn("SS");
+        modelEvento.addColumn("WL");
+        modelEvento.addColumn("AT");
+        modelEvento.addColumn("DT");
+        this.tablaEvento.setModel(modelEvento);
+        ModelEventos = (DefaultTableModel)this.tablaEvento.getModel();
+    }
+    public void initTablaResultados(){
+        //Modelo para la tabla de resultados
+        DefaultTableModel modelResultado = new DefaultTableModel();
+        modelResultado.addColumn("Tipo");
+        modelResultado.addColumn("Resultado");
+        modelResultado.addColumn("Parametro");
+        this.tablaResultados.setModel(modelResultado);
+        this.ModelResultados = (DefaultTableModel) this.tablaResultados.getModel();
+        
+        this.tablaResultados.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+        TableColumnModel columnModel = this.tablaResultados.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(60);
+        columnModel.getColumn(1).setPreferredWidth(80);
+        columnModel.getColumn(2).setPreferredWidth(300);
+    }
     public void setEstacion(Estacion estacion) {
         this.estacion = estacion;
     }
@@ -521,8 +327,7 @@ public class VisorEstacion extends javax.swing.JPanel {
             String.valueOf(cliente.getIT()),
             String.valueOf(cliente.getST())
         };
-
-        modelCliente.addRow(datos);
+        ModelClientes.addRow(datos);
     }
     
     //Funcion que muestra/anuncia un evento en la interfaz grafica
@@ -539,12 +344,19 @@ public class VisorEstacion extends javax.swing.JPanel {
             String.valueOf(estacion.getDT())
         };
 
-        modelEvento.addRow(datos);
+        ModelEventos.addRow(datos);
         
+    }
+    public void CalcularTodo(){
+        
+        initTablaResultados();
         CalcularWq();
         CalcularWs();
+        CalcularLs();
+        CalcularLq();
         
-        float countWs = 0, countWq = 0;
+        float countWs = 0.0f, countWq = 0.0f;
+        
         for(float i : promedioTiempoEnCola){
             countWq+=i;
         }
@@ -554,12 +366,50 @@ public class VisorEstacion extends javax.swing.JPanel {
         countWq/=promedioTiempoEnCola.size();
         countWs/=promedioTiempoEnServicio.size();
         
-        JLWq.setText(String.format("%.2f P/Min",countWq));
-        JLWs.setText(String.format("%.2f P/Min",countWs));
-        JLW.setText(String.format("%.2f P/Min",(Float.parseFloat(String.valueOf(countWs))+Float.parseFloat(String.valueOf(countWq)))));
+        AnunciarResultados("Wq",String.format("%.2f",countWq), "Minutos");
+        AnunciarResultados("Ws",String.format("%.2f",countWs), "Minutos");
+        AnunciarResultados("W",String.format("%.2f",countWs+countWq), "Minutos");
         
+        AnunciarResultados("Lq",String.format("%.2f",promedioPersornasEnCola), "Personas");
+        AnunciarResultados("Ls",String.format("%.2f",promedioPersornasEnServicio), "Personas");
+        AnunciarResultados("L",String.format("%.2f",promedioPersornasEnServicio+promedioPersornasEnCola), "Personas");
+        AnunciarResultados("------------","------------","------------");
+        int count = Simulacion.Cero ;
+        int clientes = 0;
+        for(Servidor server : this.estacion.getServidores()){
+            AnunciarResultados("S("+(++count)+")",String.valueOf(server.getCountClientes()), "Clientes");
+            clientes+=server.getCountClientes();
+        }
+        JLClientesNoEsperan.setText(String.valueOf(clientes-this.estacion.getnClientesCola()));
+
+        AnunciarResultados("------------","------------","------------");
+        AnunciarResultados("C",String.valueOf(this.estacion.getnClientesCola()), "Personas");
+        AnunciarResultados("------------","------------","------------");
+        count = Simulacion.Cero ;
+        for(float serveTime : promedioTiempoEnServicio){
+            AnunciarResultados("Ts("+(count++)+")",String.format("%.2f",serveTime), "Minutos");
+        }
+        AnunciarResultados("------------","------------","------------");
+        count = Simulacion.Cero ;
+        for(float colaTime : promedioTiempoEnCola){
+            AnunciarResultados("Tc("+(count++)+")",String.format("%.2f",colaTime), "Minutos");
+        }
+        AnunciarResultados("------------","------------","------------");
+        count = Simulacion.Cero ;
+        for(float serveTime : calcularUsoWs()){
+            AnunciarResultados("Ps("+(count++)+")",String.format("%.2f",100*(serveTime/ModelEventos.getRowCount()))+"%", "Probabilidad / Clientes / Servidos");
+        }
+        AnunciarResultados("------------","------------","------------");
+        count = Simulacion.Cero ;
+        for(float colaTime : calcularUsoWq()){
+            AnunciarResultados("Pc("+(count++)+")",String.format("%.2f",100*(colaTime/ModelEventos.getRowCount()))+"%", "Probabilidad / Clientes / Colas");
+        }/**/
     }
     
+    
+    public void AnunciarResultados(String tipo,String resultado, String parametro){
+        ModelResultados.addRow(new String[]{tipo,resultado,parametro});
+    }
     private void CalcularW() {
 
         int estacion = 1;
@@ -607,20 +457,35 @@ public class VisorEstacion extends javax.swing.JPanel {
         return 0;
     }
 /*##############################################################################################################################################################*/
+    private ArrayList<Integer> calcularUsoWq(){
+        int MaxWL = buscarMaxWL();//verifico la cantidad maxima de clientes que estubieron en la cola
+        int columna6 = 6;
+        ArrayList<Integer> busqueda = new ArrayList<Integer>();
+        for(int wl = 0; wl<=MaxWL; wl++){// recorre desde colas vacias hasta el maximo valor de colas
+            int count = 0;
+             for(int i = 0 ; i<ModelEventos.getRowCount() ; i++){
+                 if( wl == Integer.parseInt(ModelEventos.getValueAt(i, columna6).toString())){
+                     count++;
+                 }
+             }
+             busqueda.add(count);
+        }
+        return busqueda;
+    }
     private void CalcularWq(){
         int MaxWL = buscarMaxWL();//verifico la cantidad maxima de clientes que estubieron en la cola
         ArrayList<Float> busqueda = new ArrayList<Float>();
         for(int wl = 0; wl<=MaxWL; wl++){// recorre desde colas vacias hasta el maximo valor de colas
             ArrayList<Integer> tiempo = new ArrayList<>();
-            for(int i = 0; i<ModelEventos.getRowCount();i++){//se rrecorre la tabla (Interfaz de eventos) hasta la fila maxima
+            for(int i = 0; i<ModelEventos.getRowCount();i++){//se recorre la tabla (Interfaz de eventos) hasta la fila maxima
                 int count = 0;
                 if(wl == buscarInstanciaWl(i) ){//pregunto si el valor de esa fia es el que se esta buscando
                     for(int j = i + 1; j<ModelEventos.getRowCount();j++){//recorre mientras se mantenga el valor asi verificamos el tiempo en que se mantubo
-                        if( buscarInstanciaWl(i)!= buscarInstanciaWl(j) && count>=0){
+                        if( (buscarInstanciaWl(i)!= buscarInstanciaWl(j) || j == ModelEventos.getRowCount()-1) && count>=0){
                             tiempo.add(buscarTiempoWl(j)-buscarTiempoWl(i));
                             count = 0;
                             i = j;
-                        }else{
+                        }else {
                             count++;
                         }
                     }
@@ -659,6 +524,32 @@ public class VisorEstacion extends javax.swing.JPanel {
                 return max;
     }
     /*##############################################################################################################################################################*/
+    private ArrayList<Integer> calcularUsoWs(){
+        int MaxWS = buscarMaxWS();//verifico la cantidad maxima de clientes que estubieron en la cola
+        int columna5 = 5;
+        ArrayList<Integer> busqueda = new ArrayList<Integer>();
+        for(int ws = 0; ws<=MaxWS; ws++){// recorre desde colas vacias hasta el maximo valor de colas
+            int count = 0;
+             for(int i = 0 ; i<ModelEventos.getRowCount() ; i++){
+                 if( ws == Integer.parseInt(ModelEventos.getValueAt(i, columna5).toString())){
+                     count++;
+                 }
+             }
+             busqueda.add(count);
+        }
+        return busqueda;
+    }
+    private int buscarMaxWS() {
+        int columna = 5;
+        int max = (-1)*Simulacion.Infinito;
+        for(int fila = 0; fila<ModelEventos.getRowCount();fila++){
+            if(Integer.parseInt(ModelEventos.getValueAt(fila, columna).toString()) > max){
+                max = Integer.parseInt(ModelEventos.getValueAt(fila, columna).toString());
+            }
+        }
+                return max;
+    }
+    
     private void CalcularWs(){
         int MaxSs = buscarMaxSs();//verifico la cantidad maxima de clientes que estubieron en la cola
         ArrayList<Float> busqueda = new ArrayList<Float>();
@@ -668,10 +559,15 @@ public class VisorEstacion extends javax.swing.JPanel {
                 int count = 0;
                 if(wl == buscarInstanciaSs(i) ){//pregunto si el valor de esa fia es el que se esta buscando
                     for(int j = i + 1; j<ModelEventos.getRowCount();j++){//recorre mientras se mantenga el valor asi verificamos el tiempo en que se mantubo
-                        if( buscarInstanciaSs(i)!= buscarInstanciaSs(j) && count>=0){
+                        if( (buscarInstanciaSs(i)!= buscarInstanciaSs(j)  || j == ModelEventos.getRowCount()-1) && count>=0){
                             tiempo.add(buscarTiempoSs(j)-buscarTiempoSs(i));
                             count = 0;
-                            i = j;
+                            if(j == ModelEventos.getRowCount()-1){
+                                i = j+1;
+                            }else{
+                                i = j;
+                            }
+                            
                         }else{
                             count++;
                         }
@@ -710,24 +606,50 @@ public class VisorEstacion extends javax.swing.JPanel {
         }
                 return max;
     }
-    
-    
-    
-    
-    
-    
-    public DefaultTableModel getModelCliente() {
-        return ModelCliente;
+
+    public void CalcularLs(){
+        ArrayList<Servidor> servidores = estacion.getServidores();
+        promedioPersornasEnServicio = 0;
+        for(Servidor server : servidores){
+            promedioPersornasEnServicio += server.getCountClientes();
+        }
+        promedioPersornasEnServicio *= ModelClientes.getRowCount();
+        promedioPersornasEnServicio /= BuscarTiempo();
     }
-    public void setModelCliente(DefaultTableModel ModelCliente) {
-        this.ModelCliente = ModelCliente;
+    public void CalcularLq(){
+        promedioPersornasEnCola = estacion.getnClientesCola();
+        promedioPersornasEnCola *= ModelClientes.getRowCount();
+        promedioPersornasEnCola /= BuscarTiempo();
     }
-    public DefaultTableModel getModelEventos() {
-        return ModelEventos;
+    private int BuscarTiempo() {
+        int columna4 = 4, columna3 = 3;
+        int TMm = Integer.parseInt(ModelEventos.getValueAt(ModelEventos.getRowCount()-1, columna4).toString());
+        int TMd =Integer.parseInt(ModelEventos.getValueAt(ModelEventos.getRowCount()-1, columna3).toString());
+        
+        return TMm*(TMd+1);
     }
-    public void setModelEventos(DefaultTableModel ModelEventos) {
-        this.ModelEventos = ModelEventos;
+
+    public float getW(){
+        int flia2 = 2;
+        int columna0 = 0;
+        return Float.parseFloat(ModelResultados.getValueAt(flia2,columna0).toString());
     }
+    public float getL(){
+        int flia5 = 5;
+        int columna0 = 0;
+        return Float.parseFloat(ModelResultados.getValueAt(flia5,columna0).toString());
+    }
+    private int buscarMaxTD() {
+        int columna5 = 5;
+        int max = (-1)*Simulacion.Infinito;
+        for(int fila = 0; fila<ModelEventos.getRowCount();fila++){
+            if(Integer.parseInt(ModelEventos.getValueAt(fila, columna5).toString()) > max){
+                max = Integer.parseInt(ModelEventos.getValueAt(fila, columna5).toString());
+            }
+        }
+                return max;
+    }
+    
     public JLabel getJLDias() {
         return JLDias;
     }
@@ -735,10 +657,10 @@ public class VisorEstacion extends javax.swing.JPanel {
         this.JLDias = JLDias;
     }
     public JLabel getJLDias1() {
-        return JLDias1;
+        return JLClientesNoEsperan;
     }
     public void setJLDias1(JLabel JLDias1) {
-        this.JLDias1 = JLDias1;
+        this.JLClientesNoEsperan = JLDias1;
     }
     public JLabel getJLDias2() {
         return JLDias2;
@@ -764,66 +686,13 @@ public class VisorEstacion extends javax.swing.JPanel {
     public void setJLEstaciones(JLabel JLEstaciones) {
         this.JLEstaciones = JLEstaciones;
     }
-    public static JLabel getJLL() {
-        return JLL;
-    }
-    public static void setJLL(JLabel JLL) {
-        VisorEstacion.JLL = JLL;
-    }
-    public JLabel getJLLq() {
-        return JLLq;
-    }
-    public void setJLLq(JLabel JLLq) {
-        this.JLLq = JLLq;
-    }
-    public JLabel getJLLs() {
-        return JLLs;
-    }
-    public void setJLLs(JLabel JLLs) {
-        this.JLLs = JLLs;
-    }
     public JLabel getJLMinutos() {
         return JLMinutos;
     }
     public void setJLMinutos(JLabel JLMinutos) {
         this.JLMinutos = JLMinutos;
     }
-    public static JLabel getJLW() {
-        return JLW;
-    }
-    public static void setJLW(JLabel JLW) {
-        VisorEstacion.JLW = JLW;
-    }
-    public JLabel getJLWq() {
-        return JLWq;
-    }
-    public void setJLWq(JLabel JLWq) {
-        this.JLWq = JLWq;
-    }
-    public JLabel getJLWs() {
-        return JLWs;
-    }
-    public void setJLWs(JLabel JLWs) {
-        this.JLWs = JLWs;
-    }
-    public static JLabel getEstacion1() {
-        return estacion1;
-    }
-    public static void setEstacion1(JLabel estacion1) {
-        VisorEstacion.estacion1 = estacion1;
-    }
-    public static JLabel getEstacion2() {
-        return estacion2;
-    }
-    public static void setEstacion2(JLabel estacion2) {
-        VisorEstacion.estacion2 = estacion2;
-    }
-    public static JLabel getPorcentajeSistema() {
-        return porcentajeSistema;
-    }
-    public static void setPorcentajeSistema(JLabel porcentajeSistema) {
-        VisorEstacion.porcentajeSistema = porcentajeSistema;
-    }
+    
     public JTable getTablaCliente() {
         return tablaCliente;
     }
@@ -837,52 +706,31 @@ public class VisorEstacion extends javax.swing.JPanel {
         this.tablaEvento = tablaEvento;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel JLClientesNoEsperan;
     private javax.swing.JLabel JLDias;
-    private javax.swing.JLabel JLDias1;
     private javax.swing.JLabel JLDias2;
     private javax.swing.JLabel JLDias3;
     private javax.swing.JLabel JLDias4;
     private javax.swing.JLabel JLEstaciones;
-    private static javax.swing.JLabel JLL;
-    private javax.swing.JLabel JLLq;
-    private javax.swing.JLabel JLLs;
     private javax.swing.JLabel JLMinutos;
-    private static javax.swing.JLabel JLW;
-    private javax.swing.JLabel JLWq;
-    private javax.swing.JLabel JLWs;
-    private static javax.swing.JLabel estacion1;
-    private static javax.swing.JLabel estacion2;
-    private static javax.swing.JLabel estacion3;
-    private static javax.swing.JLabel estacion4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private static javax.swing.JLabel porcentajeSistema;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable tablaCliente;
     private javax.swing.JTable tablaEvento;
+    private javax.swing.JTable tablaResultados;
     // End of variables declaration//GEN-END:variables
+
+    
 
     
 }
