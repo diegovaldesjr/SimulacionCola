@@ -11,6 +11,7 @@ package Modelo;
  */
 public class Servidor {
     private Cliente cliente;
+    private int CountClientes;
 
     public Cliente getCliente() {
         return cliente;
@@ -18,10 +19,18 @@ public class Servidor {
 
     public Servidor() {
         this.cliente = null;
+        this.CountClientes=0;
     }
 
     public void setCliente(Cliente cliente) {
+        if(cliente != null){
+            CountClientes++;
+        }
         this.cliente = cliente;
+    }
+
+    public int getCountClientes() {
+        return CountClientes;
     }
 
 
