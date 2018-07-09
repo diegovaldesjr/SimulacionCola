@@ -68,6 +68,8 @@ public class Simulacion extends javax.swing.JFrame{
         this.SMinima = 1;
         
         //Inicializar las estaciones y de las interfaces respectivas
+        PanelGeneral pg = new PanelGeneral();
+        TabPanelSimulacion.add("General",pg);
         
         estaciones = new ArrayList<>();
         for(int i=0; i< EMaxima; i++){
