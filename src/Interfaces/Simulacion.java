@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Diego Valdes
  */
-public class Simulacion extends javax.swing.JFrame implements Runnable{
+public class Simulacion extends javax.swing.JFrame{
     public static DefaultTableModel modelCliente;
     public static DefaultTableModel modelEvento;
     
@@ -31,17 +31,28 @@ public class Simulacion extends javax.swing.JFrame implements Runnable{
     private int SMaxima;
     private int SMinima;
     
+    private static int Xi;
+    private static int A;
+    private static int C;
+    
     public static final int Cero = 0;
+    public static final int Cien = 100;
     public static final int Infinito = 999999999;
     private int Evento;
     
+    static {
+        Xi = (int )(Math.random() * Cien + Cero);
+        A = 13;
+        C = 65;
+        
+    }
     private ArrayList<Estacion> estaciones;
 
     public static Simulacion simulacion;
     /**
      * Creates new form Simulacion
      */
-    public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima) {
+    public Simulacion(int MaxTMd,int EMaxima, int MaxTMm) {
 
         Simulacion.simulacion = this;
         initComponents();
@@ -55,16 +66,17 @@ public class Simulacion extends javax.swing.JFrame implements Runnable{
         this.EMinima = 1;
         this.EMaxima = EMaxima;
         this.SMinima = 1;
-        this.SMaxima = SMaxima;
         
         //Inicializar las estaciones y de las interfaces respectivas
         
         estaciones = new ArrayList<>();
         for(int i=0; i< EMaxima; i++){
             int numeroEstacion = i+1;
+            
             VisorEstacion visor = new VisorEstacion(EMaxima,MaxTMm,MaxTMd);
-            Estacion estacion = new Estacion(visor, SMaxima, numeroEstacion);
+            Estacion estacion = new Estacion(visor, numeroEstacion);
             visor.setEstacion(estacion);
+            
             estaciones.add(estacion);
             TabPanelSimulacion.add("Estacion "+String.valueOf(estacion.getNumeroEstacion()), visor);
         }
@@ -75,13 +87,8 @@ public class Simulacion extends javax.swing.JFrame implements Runnable{
         //Iniciar la simulacion
         setVisible(true);
     }
-    
-    @Override
-    public void run() {
-        Start();
-    }
-    
-    private void Start(){
+
+    public void Start(){
         int instancia = 0;
         while(TMd < MaxTMd){
             while(TMm < MaxTMm /*&& clienteEnSistema()*/){
@@ -96,10 +103,11 @@ public class Simulacion extends javax.swing.JFrame implements Runnable{
             }
             System.out.println("Chao");
             System.out.println(TMm);
+            this.TMm = Cero;
             this.TMd++;
-            for(Estacion estacion : estaciones){
-                estacion.Calcular();
-            }
+        }
+        for(Estacion estacion : estaciones){
+            estacion.Calcular();
         }
     }
     
@@ -132,9 +140,13 @@ public class Simulacion extends javax.swing.JFrame implements Runnable{
         return Random(SMaxima,SMinima);
     }
     
-    public int GetInterval() { return Random(100,0); }
+    public int GetInterval() { 
+        return Xi = ((A*Xi)+C)%Cien;
+    }
     
-    public int GetInterval(int max, int min) { return this.Random(max, min); }
+    public int GetInterval(int max, int min) { 
+        return this.Random(max, min); 
+    }
 
     public int getTMd() {
         return TMd;

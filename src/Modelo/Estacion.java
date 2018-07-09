@@ -37,7 +37,12 @@ public class Estacion {
     
     static{s = Simulacion.simulacion;}
     
-    public Estacion( VisorEstacion visor, int MaxServer, int NumeroEstacion) {
+    public Estacion( VisorEstacion visor, int NumeroEstacion) {
+       this.NumeroEstacion = NumeroEstacion;
+        
+        int prueba= Integer.parseInt(JOptionPane.showInputDialog("Por Favor, ingrese la cantidad de servidores para la estacion "+NumeroEstacion));
+        //JOptionPane.showMessageDialog(null,"tu nombre es: "+prueba);
+        this.MaxServer =prueba;
         AT = 0;
         DT = Simulacion.Infinito;
         this.visor = visor;
@@ -53,7 +58,7 @@ public class Estacion {
         }
         
         //Numero de estacion
-        this.NumeroEstacion = NumeroEstacion;
+        
         
         nClientes = 0;
         nClientesCola = 0;
@@ -267,8 +272,5 @@ public class Estacion {
     public int getnClientesCola() {
         return nClientesCola;
     }
-
     
-    
-
 }

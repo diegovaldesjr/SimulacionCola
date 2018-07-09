@@ -305,7 +305,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         DefaultTableModel modelResultado = new DefaultTableModel();
         modelResultado.addColumn("Tipo");
         modelResultado.addColumn("Resultado");
-        modelResultado.addColumn("Parametro");
+        modelResultado.addColumn("Comentarios");
         this.tablaResultados.setModel(modelResultado);
         this.ModelResultados = (DefaultTableModel) this.tablaResultados.getModel();
         
@@ -314,7 +314,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         TableColumnModel columnModel = this.tablaResultados.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(60);
         columnModel.getColumn(1).setPreferredWidth(80);
-        columnModel.getColumn(2).setPreferredWidth(300);
+        columnModel.getColumn(2).setPreferredWidth(330);
     }
     public void setEstacion(Estacion estacion) {
         this.estacion = estacion;
@@ -370,46 +370,46 @@ public class VisorEstacion extends javax.swing.JPanel {
         AnunciarResultados("Ws",String.format("%.2f",countWs), "Minutos");
         AnunciarResultados("W",String.format("%.2f",countWs+countWq), "Minutos");
         
-        AnunciarResultados("Lq",String.format("%.2f",promedioPersornasEnCola), "Personas");
-        AnunciarResultados("Ls",String.format("%.2f",promedioPersornasEnServicio), "Personas");
-        AnunciarResultados("L",String.format("%.2f",promedioPersornasEnServicio+promedioPersornasEnCola), "Personas");
+        AnunciarResultados("Lq",String.format("%.2f",promedioPersornasEnCola), "Clientes");
+        AnunciarResultados("Ls",String.format("%.2f",promedioPersornasEnServicio), "Clientes");
+        AnunciarResultados("L",String.format("%.2f",promedioPersornasEnServicio+promedioPersornasEnCola), "Clientes");
         AnunciarResultados("------------","------------","------------");
         int count = Simulacion.Cero ;
         int clientes = 0;
         for(Servidor server : this.estacion.getServidores()){
-            AnunciarResultados("S("+(++count)+")",String.valueOf(server.getCountClientes()), "Clientes");
+            AnunciarResultados("S("+(++count)+")",String.valueOf(server.getCountClientes()), "Cantidad de clientes que estuvieron en el servidor "+(count));
             clientes+=server.getCountClientes();
         }
         JLClientesNoEsperan.setText(String.valueOf(clientes-this.estacion.getnClientesCola()));
 
         AnunciarResultados("------------","------------","------------");
-        AnunciarResultados("C",String.valueOf(this.estacion.getnClientesCola()), "Personas");
+        AnunciarResultados("C",String.valueOf(this.estacion.getnClientesCola()), "Cantidad de clientes que estuvieron en cola");
         AnunciarResultados("------------","------------","------------");
         count = Simulacion.Cero ;
         for(float serveTime : promedioTiempoEnServicio){
-            AnunciarResultados("Ts("+(count++)+")",String.format("%.2f",serveTime), "Minutos");
+            AnunciarResultados("Ts("+(count)+")",String.format("%.2f",serveTime), "Tiempo promedio de que hallan "+(count++)+" clientes siendo servidos");
         }
         AnunciarResultados("------------","------------","------------");
         count = Simulacion.Cero ;
         for(float colaTime : promedioTiempoEnCola){
-            AnunciarResultados("Tc("+(count++)+")",String.format("%.2f",colaTime), "Minutos");
+            AnunciarResultados("Tc("+(count)+")",String.format("%.2f",colaTime), "Tiempo promedio de que hallan "+(count++)+" clientes en cola");
         }
         AnunciarResultados("------------","------------","------------");
         count = Simulacion.Cero ;
         for(float serveTime : calcularUsoWs()){
-            AnunciarResultados("Ps("+(count++)+")",String.format("%.2f",100*(serveTime/ModelEventos.getRowCount()))+"%", "Probabilidad / Clientes / Servidos");
+            AnunciarResultados("Ps("+(count)+")",String.format("%.2f",100*(serveTime/ModelEventos.getRowCount()))+"%", "Probabilidad de que hallan "+(count++)+" clientes siendo servidos");
         }
         AnunciarResultados("------------","------------","------------");
         count = Simulacion.Cero ;
         for(float colaTime : calcularUsoWq()){
-            AnunciarResultados("Pc("+(count++)+")",String.format("%.2f",100*(colaTime/ModelEventos.getRowCount()))+"%", "Probabilidad / Clientes / Colas");
+            AnunciarResultados("Pc("+(count)+")",String.format("%.2f",100*(colaTime/ModelEventos.getRowCount()))+"%", "Probabilidad de que hallan "+(count++)+" clientes en cola");
         }/**/
     }
-    
     
     public void AnunciarResultados(String tipo,String resultado, String parametro){
         ModelResultados.addRow(new String[]{tipo,resultado,parametro});
     }
+    
     private void CalcularW() {
 
         int estacion = 1;
@@ -437,8 +437,6 @@ public class VisorEstacion extends javax.swing.JPanel {
                 calculos.add(salida-entrada);
             }
         }
-            
-
     }
 
     private int buscarEntradaW(DefaultTableModel modelo,int fila,int cliente){
@@ -472,6 +470,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         }
         return busqueda;
     }
+    
     private void CalcularWq(){
         int MaxWL = buscarMaxWL();//verifico la cantidad maxima de clientes que estubieron en la cola
         ArrayList<Float> busqueda = new ArrayList<Float>();
@@ -508,11 +507,13 @@ public class VisorEstacion extends javax.swing.JPanel {
         int columna6 = 6;
         return Integer.parseInt(ModelEventos.getValueAt(fila, columna6).toString());
     }
+    
     private int buscarTiempoWl(int fila){
         int columna4 = 4;
         return Integer.parseInt(ModelEventos.getValueAt(fila, columna4).toString());
 
     }
+    
     private int buscarMaxWL() {
         int columna = 6;
         int max = (-1)*Simulacion.Infinito;
@@ -523,6 +524,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         }
                 return max;
     }
+    
     /*##############################################################################################################################################################*/
     private ArrayList<Integer> calcularUsoWs(){
         int MaxWS = buscarMaxWS();//verifico la cantidad maxima de clientes que estubieron en la cola
@@ -539,6 +541,7 @@ public class VisorEstacion extends javax.swing.JPanel {
         }
         return busqueda;
     }
+    
     private int buscarMaxWS() {
         int columna = 5;
         int max = (-1)*Simulacion.Infinito;
@@ -547,7 +550,7 @@ public class VisorEstacion extends javax.swing.JPanel {
                 max = Integer.parseInt(ModelEventos.getValueAt(fila, columna).toString());
             }
         }
-                return max;
+        return max;
     }
     
     private void CalcularWs(){
@@ -591,11 +594,13 @@ public class VisorEstacion extends javax.swing.JPanel {
         int columna5 = 5;
         return Integer.parseInt(ModelEventos.getValueAt(fila, columna5).toString());
     }
+    
     private int buscarTiempoSs(int fila){
         int columna4 = 4;
         return Integer.parseInt(ModelEventos.getValueAt(fila, columna4).toString());
 
     }
+    
     private int buscarMaxSs() {
         int columna5 = 5;
         int max = (-1)*Simulacion.Infinito;
@@ -616,11 +621,13 @@ public class VisorEstacion extends javax.swing.JPanel {
         promedioPersornasEnServicio *= ModelClientes.getRowCount();
         promedioPersornasEnServicio /= BuscarTiempo();
     }
+    
     public void CalcularLq(){
         promedioPersornasEnCola = estacion.getnClientesCola();
         promedioPersornasEnCola *= ModelClientes.getRowCount();
         promedioPersornasEnCola /= BuscarTiempo();
     }
+    
     private int BuscarTiempo() {
         int columna4 = 4, columna3 = 3;
         int TMm = Integer.parseInt(ModelEventos.getValueAt(ModelEventos.getRowCount()-1, columna4).toString());
@@ -634,11 +641,13 @@ public class VisorEstacion extends javax.swing.JPanel {
         int columna0 = 0;
         return Float.parseFloat(ModelResultados.getValueAt(flia2,columna0).toString());
     }
+    
     public float getL(){
         int flia5 = 5;
         int columna0 = 0;
         return Float.parseFloat(ModelResultados.getValueAt(flia5,columna0).toString());
     }
+    
     private int buscarMaxTD() {
         int columna5 = 5;
         int max = (-1)*Simulacion.Infinito;
@@ -649,7 +658,9 @@ public class VisorEstacion extends javax.swing.JPanel {
         }
                 return max;
     }
+
     
+    /*****************************************************************************************************************************/
     public JLabel getJLDias() {
         return JLDias;
     }
