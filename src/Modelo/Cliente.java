@@ -11,8 +11,7 @@ package Modelo;
  */
 public class Cliente {
     private static int CuentaCliente;
-    //private int Entrada;
-    //private int Salida;
+
     private int NumeroCliente;
     private int EntradaEstacion;
     private int SalidaEstacion;
@@ -29,6 +28,7 @@ public class Cliente {
         this.ST = DT;
 
         NumeroCliente = CuentaCliente++;
+        System.out.println("Cliente numero " + NumeroCliente);
     }
 
     public static int getCuentaCliente() {

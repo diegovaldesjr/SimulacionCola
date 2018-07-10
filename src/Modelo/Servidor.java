@@ -9,19 +9,17 @@ package Modelo;
  *
  * @author Diego Valdes
  */
-
 public class Servidor {
     private Cliente cliente;
     private int CountClientes;
 
-    
     public Cliente getCliente() {
         return cliente;
     }
 
     public Servidor() {
         this.cliente = null;
-        CountClientes=0;
+        this.CountClientes=0;
     }
 
     public void setCliente(Cliente cliente) {
@@ -34,7 +32,6 @@ public class Servidor {
     public int getCountClientes() {
         return CountClientes;
     }
-    
-    
+
 
 }

@@ -173,16 +173,28 @@ public class Interfaz extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Inicializa la interfaz que mostrara la simulacion, aqui iran las entradas de la
         //Interfaz anterior
-        if(dias.getText().equals("") || minutos.getText().equals("") || estacion.getText().equals("") || clientes.getText().equals("")){
+        if(dias.getText().equals("") || minutos.getText().equals("") || estacion.getText().equals("")){
             JOptionPane.showMessageDialog(this, "los parametros no pueden estas vacios");
         }else{
             try{
-                Simulacion simula = new Simulacion( Integer.parseInt(dias.getText()),
+                //int MaxTMd, int MaxTMm, int EMaxima, int MaxClientes*/
+                Simulacion simula;
+                if(clientes.getText().equals(""))
+                {
+                    simula = new Simulacion( Integer.parseInt(dias.getText()),
+                                                    Integer.parseInt(minutos.getText()),
                                                     Integer.parseInt(estacion.getText()),
-                                                    Integer.parseInt(minutos.getText()));
-                simula.Start();
+                                                    Simulacion.Infinito);
+                }else{
+                    simula = new Simulacion( Integer.parseInt(dias.getText()),
+                                                    Integer.parseInt(minutos.getText()),
+                                                    Integer.parseInt(estacion.getText()),
+                                                    Integer.parseInt(clientes.getText()));
+                }
+                
+                simula.setVisible(true);
                 this.dispose();
-            }catch(Exception ex){
+            }catch(NumberFormatException ex){
                 JOptionPane.showMessageDialog(this, "Solo se admiten valores numericos");
             }
         }
@@ -217,6 +229,9 @@ public class Interfaz extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

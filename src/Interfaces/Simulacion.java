@@ -6,20 +6,17 @@
 package Interfaces;
 
 import Modelo.Cliente;
-import Modelo.Estacion;
 import Modelo.Probabilidad;
-import java.math.BigInteger;
+import Modelo.Servidor;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import javax.swing.JTabbedPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Diego Valdes
  */
-public class Simulacion extends javax.swing.JFrame{
-    public static DefaultTableModel modelCliente;
-    public static DefaultTableModel modelEvento;
+public class Simulacion extends javax.swing.JFrame {
     
     private int TMd;
     private int TMm;
@@ -31,33 +28,21 @@ public class Simulacion extends javax.swing.JFrame{
     private int SMaxima;
     private int SMinima;
     
-    private static int Xi;
-    private static int A;
-    private static int C;
-    
     public static final int Cero = 0;
-    public static final int Cien = 100;
     public static final int Infinito = 999999999;
-    private int Evento;
     
-    static {
-        Xi = (int )(Math.random() * Cien + Cero);
-        A = 13;
-        C = 65;
-        
-    }
+    private int MaxClientes;
+    public int ClientesNoAtendidos;
+    
+    private Resultados resultados;
     private ArrayList<Estacion> estaciones;
 
-    public static Simulacion simulacion;
     /**
      * Creates new form Simulacion
      */
-    public Simulacion(int MaxTMd,int EMaxima, int MaxTMm) {
-
-        Simulacion.simulacion = this;
+    public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int MaxClientes) {
         initComponents();
 
-        this.Evento = 0;
         this.TMd = 0;
         this.TMm = 0;
         
@@ -66,56 +51,164 @@ public class Simulacion extends javax.swing.JFrame{
         this.EMinima = 1;
         this.EMaxima = EMaxima;
         this.SMinima = 1;
+        //this.SMaxima = SMaxima;
+        this.MaxClientes = MaxClientes;
         
-        //Inicializar las estaciones y de las interfaces respectivas
-        PanelGeneral pg = new PanelGeneral();
-        TabPanelSimulacion.add("General",pg);
+        this.ClientesNoAtendidos = 0;
         
+        //Inicializar las estaciones
         estaciones = new ArrayList<>();
+        
+        resultados = new Resultados();
+        principal.add("Resultados", resultados);
+        
         for(int i=0; i< EMaxima; i++){
             int numeroEstacion = i+1;
-            
-            VisorEstacion visor = new VisorEstacion(EMaxima,MaxTMm,MaxTMd);
-            Estacion estacion = new Estacion(visor, numeroEstacion);
-            visor.setEstacion(estacion);
-            
+            Estacion estacion = new Estacion(this, SMaxima, numeroEstacion);
             estaciones.add(estacion);
-            TabPanelSimulacion.add("Estacion "+String.valueOf(estacion.getNumeroEstacion()), visor);
+            principal.add("Estacion "+numeroEstacion, estacion);
         }
+        
         //Creacion de modelos para mostrar en las interfaces
         
         this.setLocationRelativeTo(null);
-
+        
+        /*
+        //Mostrar valores en la interfaz
+        JLEstaciones.setText(String.valueOf(EMaxima));
+        JLMinutos.setText(String.valueOf(MaxTMm));;
+        JLDias.setText(String.valueOf(MaxTMd));*/
+        
+        resultados.setJLEstaciones(EMaxima);
+        resultados.setJLTMd(MaxTMd);
+        resultados.setJLTMm(MaxTMm);
+        
+        
+    
         //Iniciar la simulacion
-        setVisible(true);
+        Start();
     }
-
-    public void Start(){
-        int instancia = 0;
+    
+    private void Start(){
         while(TMd < MaxTMd){
-            while(TMm < MaxTMm /*&& clienteEnSistema()*/){
+            while(TMm < MaxTMm /*|| clienteEnSistema()*/){
                 for(Estacion estacion: estaciones){
                     estacion.simulacionCola();
                 }
-                System.out.println(TMm);
             }
-            if(instancia == 0){
-                setVisible(true);
-                instancia++;
+            for(Estacion estacion: estaciones){
+                estacion.calcularTiempoAdicional();
+                estacion.initEstacion();
             }
-            System.out.println("Chao");
-            System.out.println(TMm);
-            this.TMm = Cero;
             this.TMd++;
+            this.TMm = 0;
         }
-        for(Estacion estacion : estaciones){
-            estacion.Calcular();
+        
+        for(Estacion estacion: estaciones){
+            estacion.CalcularTodo();
         }
+        calcularTodo();
+        resultados.setJLNoAtendidos(ClientesNoAtendidos);
+        calcularClientesNoEsperan();
+        calcularProbEsperar();
+        calcularTiempoPromedioAdicional();
+    }
+    private void calcularTodo(){
+        
+        float W = 0;
+        float Wq = 0;
+        float L = 0;
+        float Lq = 0;
+        
+        int count = 0;
+        int columna0 = 0, columna1 = 1;
+        
+        for(Estacion estacion: estaciones){
+            //estacion.getTablaResultados().getModel()
+            for(int i = 0;i < estacion.getTablaResultados().getModel().getRowCount(); i++){
+                if(estacion.getTablaResultados().getModel().getValueAt(i, columna0).toString().equals("W")){
+                    W += Float.valueOf(estacion.getTablaResultados().getModel().getValueAt(i, columna1).toString());
+                    count++;
+                    break;
+                }
+            }
+        }
+        
+        W/=count;
+        count=0;
+        
+        for(Estacion estacion: estaciones){
+            //estacion.getTablaResultados().getModel()
+            for(int i = 0;i < estacion.getTablaResultados().getModel().getRowCount(); i++){
+                if(estacion.getTablaResultados().getModel().getValueAt(i, columna0).toString().equals("Wq")){
+                    Wq += Float.valueOf(estacion.getTablaResultados().getModel().getValueAt(i, columna1).toString());
+                    count++;
+                    break;
+                }
+            }
+        }
+        
+        Wq/=count;
+        count=0;
+        
+        for(Estacion estacion: estaciones){
+            //estacion.getTablaResultados().getModel()
+            for(int i = 0;i < estacion.getTablaResultados().getModel().getRowCount(); i++){
+                if(estacion.getTablaResultados().getModel().getValueAt(i, columna0).toString().equals("L")){
+                    L += Float.valueOf(estacion.getTablaResultados().getModel().getValueAt(i, columna1).toString());
+                    count++;
+                    break;
+                }
+            }
+        }
+        
+        L/=count;
+        count=0;
+        
+        for(Estacion estacion: estaciones){
+            //estacion.getTablaResultados().getModel()
+            for(int i = 0;i < estacion.getTablaResultados().getModel().getRowCount(); i++){
+                if(estacion.getTablaResultados().getModel().getValueAt(i, columna0).toString().equals("Lq")){
+                    Lq += Float.valueOf(estacion.getTablaResultados().getModel().getValueAt(i, columna1).toString());
+                    count++;
+                    break;
+                }
+            }
+        }
+        
+        Lq/=count;
+        resultados.getJLL().setText(String.format("%.2f", L));
+        resultados.getJLLq().setText(String.format("%.2f", Lq));
+        resultados.getJLW().setText(String.format("%.2f", W));
+        resultados.getJLWq().setText(String.format("%.2f", Wq));
+        
     }
     
     //Si aun hay clientes en el sistema
     private boolean clienteEnSistema(){
-        return true;
+        
+        for(Estacion estacion: estaciones){
+            if(estacion.getnClientes() != 0 && TMm >= MaxTMm)
+                return true;
+        }
+        return false;
+    }
+    
+    //Devuelve true si el sistema no esta lleno, sino devuelve falso
+    public boolean verificarCapacidad(){
+        int nClientes = 0;
+        
+        for(Estacion estacion: estaciones){
+            nClientes += estacion.getnClientes();
+        }
+        
+        if(nClientes < MaxClientes)
+            return true;
+        else{
+            System.out.println("Sistema full");
+            ClientesNoAtendidos++;
+            return false;
+        }
     }
     
     public Cliente pedirCliente(){
@@ -131,6 +224,21 @@ public class Simulacion extends javax.swing.JFrame{
         }
     }
     
+    public Cliente proximoEnSalir(int NumeroEstacion){
+        int indice = NumeroEstacion - 2;
+        int ref = Infinito;
+        Cliente cliente = null;
+        
+        for(Servidor servidor: estaciones.get(indice).getServidores()){
+            if(servidor.getCliente() != null && servidor.getCliente().getSalidaEstacion() < ref){
+                cliente = servidor.getCliente();
+                ref = cliente.getSalidaEstacion();
+            }
+        }
+        
+        return cliente;
+    }
+    
     private int Random(int max, int min){
         return (int )(Math.random() * max + min);
     }
@@ -142,20 +250,12 @@ public class Simulacion extends javax.swing.JFrame{
         return Random(SMaxima,SMinima);
     }
     
-    public int GetInterval() { 
-        return Xi = ((A*Xi)+C)%Cien;
-    }
+    public int GetInterval() { return Random(100,0); }
     
-    public int GetInterval(int max, int min) { 
-        return this.Random(max, min); 
-    }
+    public int GetInterval(int max, int min) { return this.Random(max, min); }
 
     public int getTMd() {
         return TMd;
-    }
-
-    public void setTMd(int TMd) {
-        this.TMd = TMd;
     }
     
     public int getTMm() {
@@ -174,42 +274,33 @@ public class Simulacion extends javax.swing.JFrame{
         this.MaxTMm = MaxTMm;
     }
     
-    public static DefaultTableModel getModelo(){
-        return modelEvento;
-    } 
-
-    public static DefaultTableModel getModelCliente() {
-        return modelCliente;
+    public void calcularClientesNoEsperan(){
+        int cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getnClientesNoEspera();
+        }
+        
+        resultados.setJLNoEsperan(cont);
     }
-
-    /*
-    public static void setJLL(String JLL) {
-        Simulacion.JLL.setText(JLL);
+    
+    public void calcularProbEsperar(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.probEsperar();
+        }
+        cont /= EMaxima;
+        resultados.setJLEsperar(cont);
     }
-
-    public static void setJLW(String JLW) {
-        Simulacion.JLW.setText(JLW);
+    
+    public void calcularTiempoPromedioAdicional(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += (float) (estacion.getTiempoAdicional());
+        }
+        cont /= EMaxima;
+        resultados.setJLTiempoAdicional(cont);
     }
-
-    public static void setEstacion1(String  estacion1) {
-        Simulacion.estacion1.setText( estacion1);
-    }
-
-    public static void setEstacion2(String  estacion2) {
-        Simulacion.estacion2.setText( estacion2);
-    }
-
-    public static void setEstacion3(String  estacion3) {
-        Simulacion.estacion3.setText( estacion3);
-    }
-
-    public static void setEstacion4(String estacion4) {
-        Simulacion.estacion4.setText( estacion4);
-    }
-
-    public static void setEstaciones(String estaciones) {
-        Simulacion.estaciones.setText(estaciones);
-    }*/
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -220,20 +311,60 @@ public class Simulacion extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        TabPanelSimulacion = new javax.swing.JTabbedPane();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        principal = new javax.swing.JTabbedPane();
+
+        jLabel3.setText("jLabel3");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jLabel12.setText("Wq :");
+
+        jLabel13.setText("X");
+
+        jLabel14.setText("Wq :");
+
+        jLabel15.setText("X");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1300, 600));
-        getContentPane().add(TabPanelSimulacion, java.awt.BorderLayout.CENTER);
+        setMinimumSize(new java.awt.Dimension(1040, 600));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(principal, javax.swing.GroupLayout.DEFAULT_SIZE, 1039, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(principal, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTabbedPane TabPanelSimulacion;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JTabbedPane principal;
     // End of variables declaration//GEN-END:variables
-
-    
-
 }
