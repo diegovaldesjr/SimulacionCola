@@ -49,6 +49,13 @@ public class Estacion extends javax.swing.JPanel {
     private int ultimoTM;
     private int tiempoAdicional;
     
+    private int W;
+    private int Wq;
+    private int Ws;
+    private int L;
+    private int Lq;
+    private int Ls;
+    
     /**
      * Creates new form Estacion
      */
@@ -77,6 +84,13 @@ public class Estacion extends javax.swing.JPanel {
         nClientesCola = 0;
         nClientesServidos = 0;
         nClientesNoEspera = 0;
+        
+        W = 0;
+        Wq = 0;
+        Ws = 0;
+        L = 0;
+        Lq = 0;
+        Ls = 0;
         
         initTablaEventos();
         initTablaClientes();
@@ -137,6 +151,8 @@ public class Estacion extends javax.swing.JPanel {
         
         if(NumeroEstacion == 1)
             entrante = new Cliente(Cero, Probabilidad.TiempoPrimeraEstacion(s.GetInterval()));
+        else
+            entrante = null;
     }
     
     public void simulacionCola(){
@@ -152,7 +168,7 @@ public class Estacion extends javax.swing.JPanel {
             
             entrante = nuevo;
         }else if(nClientes != Cero && !ServidoresVacios()){
-            System.out.println(nClientes);
+            System.out.println("nClientes "+nClientes+" estacion "+NumeroEstacion);
             //Actualizo TM
             s.setTMm(DT);
 
@@ -210,11 +226,12 @@ public class Estacion extends javax.swing.JPanel {
             nClientesCola++;
         }
         
-        if(NumeroEstacion == 1 && !clienteEnCola){
+        if(NumeroEstacion == 1 || !clienteEnCola){
             //Se genera el proximo cliente a llegar en la siguiente iteracion
             nuevo = s.pedirCliente();
         }else{
             //Pedir proximo a entrar
+            nuevo = s.proximoEnSalir(NumeroEstacion);
             System.out.println("Otra estacion");
         }
             
@@ -229,8 +246,8 @@ public class Estacion extends javax.swing.JPanel {
                 AnunciarEvento("Entrada",cliente);
         }
         
-        System.out.println("Entrada "+entrante.getIT());
-        System.out.println("Salida "+entrante.getST());
+        //System.out.println("Entrada "+entrante.getIT());
+        //System.out.println("Salida "+entrante.getST());
         System.out.println("Entrada sig"+nuevo.getIT());
         System.out.println("Salida sig"+nuevo.getST());
         System.out.println("AT "+AT);
@@ -303,13 +320,16 @@ public class Estacion extends javax.swing.JPanel {
             }
             AnunciarEvento("Salida", cliente);
             
-            s.avanzarCliente(cliente, NumeroEstacion);
             nClientes--;
+            s.avanzarCliente(cliente, NumeroEstacion);
             
             
             System.out.println("Sale de la estacion "+ NumeroEstacion + " el cliente" + cliente.getNumeroCliente());
         }else{
             System.out.println("No encontro servidor a vaciar");
+            System.out.println(s.getTMm());
+            System.out.println(DT);
+            System.out.println(AT);
         }
         
     }
@@ -333,7 +353,9 @@ public class Estacion extends javax.swing.JPanel {
             String.valueOf(cliente.getST())
         };
 
-        ModelCliente.addRow(datos);
+        //this.ModelCliente.addRow(datos);
+        DefaultTableModel model = (DefaultTableModel) this.tablaCliente.getModel();
+        model.addRow(datos);
     }
     
     //Funcion que muestra/anuncia un evento en la interfaz grafica
@@ -351,11 +373,15 @@ public class Estacion extends javax.swing.JPanel {
             String.valueOf(NumeroEstacion)
         };
 
-        ModelEvento.addRow(datos);
+        //this.ModelEvento.addRow(datos);
+        DefaultTableModel model = (DefaultTableModel) this.tablaEvento.getModel();
+        model.addRow(datos);
     }
     
     public void AnunciarResultados(String tipo,String resultado, String parametro){
-        ModelResultados.addRow(new String[]{tipo,resultado,parametro});
+        //this.ModelResultados.addRow(new String[]{tipo,resultado,parametro});
+        DefaultTableModel model = (DefaultTableModel) this.tablaResultados.getModel();
+        model.addRow(new String[]{tipo,resultado,parametro});
     }
 
     public int getnClientes() {
@@ -391,6 +417,10 @@ public class Estacion extends javax.swing.JPanel {
 
     public int getTiempoAdicional() {
         return tiempoAdicional;
+    }
+
+    public ArrayList<Servidor> getServidores() {
+        return Servidores;
     }
     /**
      * This method is called from within the constructor to initialize the form.

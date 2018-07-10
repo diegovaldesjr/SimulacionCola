@@ -7,6 +7,7 @@ package Interfaces;
 
 import Modelo.Cliente;
 import Modelo.Probabilidad;
+import Modelo.Servidor;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
@@ -58,13 +59,13 @@ public class Simulacion extends javax.swing.JFrame {
         estaciones = new ArrayList<>();
         
         resultados = new Resultados();
-        principal.addTab("Resultados", resultados);
+        principal.add("Resultados", resultados);
         
         for(int i=0; i< EMaxima; i++){
             int numeroEstacion = i+1;
             Estacion estacion = new Estacion(this, SMaxima, numeroEstacion);
             estaciones.add(estacion);
-            principal.addTab("Estacion "+numeroEstacion, estacion);
+            principal.add("Estacion "+numeroEstacion, estacion);
         }
         
         //Creacion de modelos para mostrar en las interfaces
@@ -89,7 +90,7 @@ public class Simulacion extends javax.swing.JFrame {
     
     private void Start(){
         while(TMd < MaxTMd){
-            while(TMm < MaxTMm || clienteEnSistema()){
+            while(TMm < MaxTMm /*|| clienteEnSistema()*/){
                 for(Estacion estacion: estaciones){
                     estacion.simulacionCola();
                 }
@@ -149,6 +150,21 @@ public class Simulacion extends javax.swing.JFrame {
             int siguiente = numeroEstacion;
             estaciones.get(siguiente).Insertar(cliente, false);
         }
+    }
+    
+    public Cliente proximoEnSalir(int NumeroEstacion){
+        int indice = NumeroEstacion - 2;
+        int ref = Infinito;
+        Cliente cliente = null;
+        
+        for(Servidor servidor: estaciones.get(indice).getServidores()){
+            if(servidor.getCliente() != null && servidor.getCliente().getSalidaEstacion() < ref){
+                cliente = servidor.getCliente();
+                ref = cliente.getSalidaEstacion();
+            }
+        }
+        
+        return cliente;
     }
     
     private int Random(int max, int min){
@@ -212,6 +228,7 @@ public class Simulacion extends javax.swing.JFrame {
         cont /= EMaxima;
         resultados.setJLTiempoAdicional(cont);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
