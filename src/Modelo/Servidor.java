@@ -12,14 +12,16 @@ package Modelo;
 public class Servidor {
     private Cliente cliente;
     private int CountClientes;
-
-    public Cliente getCliente() {
-        return cliente;
-    }
+    private int DT;
 
     public Servidor() {
         this.cliente = null;
-        this.CountClientes=0;
+        this.CountClientes = 0;
+        this.DT = 0;
+    }
+    
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public void setCliente(Cliente cliente) {
@@ -31,6 +33,14 @@ public class Servidor {
 
     public int getCountClientes() {
         return CountClientes;
+    }
+
+    public int getDT() {
+        return DT;
+    }
+
+    public void setDT(int DT) {
+        this.DT = DT;
     }
 
 

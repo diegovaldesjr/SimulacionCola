@@ -12,9 +12,7 @@ package Modelo;
 public class Cliente {
     private static int CuentaCliente;
 
-    private int NumeroCliente;
-    private int EntradaEstacion;
-    private int SalidaEstacion;
+    private int NumeroCliente;    
     
     private int IT;
     private int ST;
@@ -23,12 +21,12 @@ public class Cliente {
         CuentaCliente = 1;
     }
 
-    public Cliente(int AT, int DT) {
-        this.IT = AT;
-        this.ST = DT;
+    public Cliente(int IT, int ST) {
+        this.IT = IT;
+        this.ST = ST;
 
         NumeroCliente = CuentaCliente++;
-        System.out.println("Cliente numero " + NumeroCliente);
+        System.out.println("Cliente numero " + NumeroCliente + " " + IT + " " + ST);
     }
 
     public static int getCuentaCliente() {
@@ -45,22 +43,6 @@ public class Cliente {
 
     public void setNumeroCliente(int NumeroCliente) {
         this.NumeroCliente = NumeroCliente;
-    }
-
-    public int getEntradaEstacion() {
-        return EntradaEstacion;
-    }
-
-    public void setEntradaEstacion(int EntradaEstacion) {
-        this.EntradaEstacion = EntradaEstacion;
-    }
-
-    public int getSalidaEstacion() {
-        return SalidaEstacion;
-    }
-
-    public void setSalidaEstacion(int SalidaEstacion) {
-        this.SalidaEstacion = SalidaEstacion;
     }
 
     public int getIT() {

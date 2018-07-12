@@ -8,6 +8,8 @@ package Interfaces;
 import Modelo.Cliente;
 import Modelo.Probabilidad;
 import Modelo.Servidor;
+import Modelo.Tiempo;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
@@ -24,36 +26,38 @@ public class Simulacion extends javax.swing.JFrame {
     
     private int EMaxima;
     private int EMinima;
-    private int SMaxima;
-    private int SMinima;
     
     public static final int Cero = 0;
-    public static final int Infinito = 9999;
+    public static final int Infinito = 999999999;
     
     private int MaxClientes;
-    public int ClientesNoAtendidos;
+    private int ClientesNoAtendidos;
     
     private Resultados resultados;
     private ArrayList<Estacion> estaciones;
+    
+    private ArrayList<Tiempo> tiemposEntrellegadas;
+    private ArrayList<ArrayList> tiempoSalidas;
 
     /**
      * Creates new form Simulacion
      */
-    public Simulacion(int MaxTMd, int MaxTMm, int EMaxima, int SMaxima, int MaxClientes) {
+    public Simulacion(int MaxTMd, int MaxTMh, int EMaxima, int MaxClientes, ArrayList<Tiempo> tiemposEntrellegadas, ArrayList<ArrayList> tiempoSalidas) {
         initComponents();
+        this.setLocationRelativeTo(null);
 
-        this.TMd = 0;
-        this.TMm = 0;
+        TMd = 0;
+        TMm = 0;
         
         this.MaxTMd = MaxTMd;
-        this.MaxTMm = MaxTMm;
+        this.MaxTMm = MaxTMh*60;
+        
         this.EMinima = 1;
         this.EMaxima = EMaxima;
-        this.SMinima = 1;
-        this.SMaxima = SMaxima;
-        this.MaxClientes = MaxClientes;
         
-        this.ClientesNoAtendidos = 0;
+        this.MaxClientes = MaxClientes;
+        this.tiemposEntrellegadas = tiemposEntrellegadas;
+        this.tiempoSalidas = tiempoSalidas;
         
         //Inicializar las estaciones
         estaciones = new ArrayList<>();
@@ -63,34 +67,27 @@ public class Simulacion extends javax.swing.JFrame {
         
         for(int i=0; i< EMaxima; i++){
             int numeroEstacion = i+1;
-            Estacion estacion = new Estacion(this, SMaxima, numeroEstacion);
+            Estacion estacion = new Estacion(this, numeroEstacion, this.tiempoSalidas.get(0));
+            
             estaciones.add(estacion);
             principal.add("Estacion "+numeroEstacion, estacion);
         }
+  
+        ClientesNoAtendidos = 0;
         
-        //Creacion de modelos para mostrar en las interfaces
-        
-        this.setLocationRelativeTo(null);
-        
-        /*
-        //Mostrar valores en la interfaz
-        JLEstaciones.setText(String.valueOf(EMaxima));
-        JLMinutos.setText(String.valueOf(MaxTMm));;
-        JLDias.setText(String.valueOf(MaxTMd));*/
-        
-        resultados.setJLEstaciones(EMaxima);
-        resultados.setJLTMd(MaxTMd);
-        resultados.setJLTMm(MaxTMm);
-        
-        
-    
+        resultados.setJLEstaciones(this.EMaxima);
+        resultados.setJLTMd(this.MaxTMd);
+        resultados.setJLTMm(this.MaxTMm);
+
         //Iniciar la simulacion
         Start();
     }
     
+    /*****************************************************************************************************************************/
+    
     private void Start(){
         while(TMd < MaxTMd){
-            while(TMm < MaxTMm /*|| clienteEnSistema()*/){
+            while(TMm < MaxTMm || clientesEnSistema()){
                 for(Estacion estacion: estaciones){
                     estacion.simulacionCola();
                 }
@@ -102,21 +99,57 @@ public class Simulacion extends javax.swing.JFrame {
             this.TMd++;
             this.TMm = 0;
         }
-        
+
         for(Estacion estacion: estaciones){
-            estacion.resultados();
+            estacion.calcularEstadisticas();
         }
-        resultados.setJLNoAtendidos(ClientesNoAtendidos);
-        calcularClientesNoEsperan();
-        calcularProbEsperar();
-        calcularTiempoPromedioAdicional();
+        
+        calcularEstadisticas();
     }
     
+    /*****************************************************************************************************************************/
+    
+    public int GetTiempoEntreLLegadas(){
+        int rand = GetInterval();
+        int cont = 0;
+        int tiempo = 0;
+        
+        for(Tiempo posibleLlegada: tiemposEntrellegadas){
+            cont += Math.round(posibleLlegada.getProbabilidad()*100);
+            
+            if(cont >= rand){
+                tiempo = posibleLlegada.getTiempo();
+                break;
+            }
+        }
+        
+        return tiempo;
+    }
+    
+    public int GetTiempoEntreSalidas(ArrayList<Tiempo> tiemposEntreSalidas){
+        int rand = GetInterval();
+        int cont = 0;
+        int tiempo = 0;
+        
+        for(Tiempo posibleSalida: tiemposEntreSalidas){
+            cont += Math.round(posibleSalida.getProbabilidad()*100);
+            
+            if(cont >= rand){
+                tiempo = posibleSalida.getTiempo();
+                break;
+            }
+        }
+        
+        return tiempo;
+    }
+    
+    /*****************************************************************************************************************************/
+    
     //Si aun hay clientes en el sistema
-    private boolean clienteEnSistema(){
+    private boolean clientesEnSistema(){
         
         for(Estacion estacion: estaciones){
-            if(estacion.getnClientes() != 0 && TMm >= MaxTMm)
+            if(estacion.getnClientes() != 0)
                 return true;
         }
         return false;
@@ -139,8 +172,8 @@ public class Simulacion extends javax.swing.JFrame {
         }
     }
     
-    public Cliente pedirCliente(){
-        return new Cliente(Probabilidad.TiempoEntreLlegadas(this.GetInterval()), Probabilidad.TiempoPrimeraEstacion(this.GetInterval()));
+    public Cliente pedirCliente(ArrayList<Tiempo> tiemposEntreSalidas){
+        return new Cliente(GetTiempoEntreLLegadas(),GetTiempoEntreSalidas(tiemposEntreSalidas));
     }
     
     public void avanzarCliente(Cliente cliente, int numeroEstacion){
@@ -148,6 +181,9 @@ public class Simulacion extends javax.swing.JFrame {
         //Pasa a la siguiente
         if(numeroEstacion < EMaxima){
             int siguiente = numeroEstacion;
+            
+            cliente.setIT(TMm);
+            cliente.setST(GetTiempoEntreSalidas(estaciones.get(siguiente).getTiemposEntreSalidas()));
             estaciones.get(siguiente).Insertar(cliente, false);
         }
     }
@@ -158,29 +194,65 @@ public class Simulacion extends javax.swing.JFrame {
         Cliente cliente = null;
         
         for(Servidor servidor: estaciones.get(indice).getServidores()){
-            if(servidor.getCliente() != null && servidor.getCliente().getSalidaEstacion() < ref){
+            if(servidor.getCliente() != null && ref > servidor.getDT()){
+                ref = servidor.getDT();
                 cliente = servidor.getCliente();
-                ref = cliente.getSalidaEstacion();
             }
         }
+        
+        if(cliente == null)
+            cliente = estaciones.get(indice).getEntrante();
         
         return cliente;
     }
     
+    /*****************************************************************************************************************************/
+    
     private int Random(int max, int min){
         return (int )(Math.random() * max + min);
-    }
-
-    public int GetTiempoEntreLLegadas(){
-        return Random(EMaxima,EMinima);
-    }
-    public int GetTiempoEntreSalidas(){
-        return Random(SMaxima,SMinima);
     }
     
     public int GetInterval() { return Random(100,0); }
     
     public int GetInterval(int max, int min) { return this.Random(max, min); }
+    
+    /*****************************************************************************************************************************/
+    public void calcularEstadisticas(){
+        calcularTiempoPromedioAdicional();
+        calcularProbEsperar();
+        calcularClientesNoEsperan();
+        
+        resultados.setJLNoAtendidos(ClientesNoAtendidos);
+    }
+    
+    public void calcularClientesNoEsperan(){
+        int cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getnClientesNoEspera();
+        }
+        
+        resultados.setJLNoEsperan(cont);
+    }
+    
+    public void calcularProbEsperar(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.calcularProbEsperar();
+        }
+        cont /= EMaxima;
+        resultados.setJLEsperar(cont);
+    }
+    
+    public void calcularTiempoPromedioAdicional(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getTiempoPromedioAdicional();
+        }
+        cont /= EMaxima;
+        resultados.setJLTiempoAdicional(cont);
+    }
+    
+    /*****************************************************************************************************************************/
 
     public int getTMd() {
         return TMd;
@@ -201,32 +273,9 @@ public class Simulacion extends javax.swing.JFrame {
     public void setMaxTMm(int MaxTMm) {
         this.MaxTMm = MaxTMm;
     }
-    
-    public void calcularClientesNoEsperan(){
-        int cont = 0;
-        for(Estacion estacion: estaciones){
-            cont += estacion.getnClientesNoEspera();
-        }
-        
-        resultados.setJLNoEsperan(cont);
-    }
-    
-    public void calcularProbEsperar(){
-        float cont = 0;
-        for(Estacion estacion: estaciones){
-            cont += estacion.probEsperar();
-        }
-        cont /= EMaxima;
-        resultados.setJLEsperar(cont);
-    }
-    
-    public void calcularTiempoPromedioAdicional(){
-        float cont = 0;
-        for(Estacion estacion: estaciones){
-            cont += (float) (estacion.getTiempoAdicional());
-        }
-        cont /= EMaxima;
-        resultados.setJLTiempoAdicional(cont);
+
+    public int getMaxTMd() {
+        return MaxTMd;
     }
     
 
@@ -275,7 +324,7 @@ public class Simulacion extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(principal, javax.swing.GroupLayout.DEFAULT_SIZE, 1039, Short.MAX_VALUE)
+            .addComponent(principal, javax.swing.GroupLayout.DEFAULT_SIZE, 1300, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
