@@ -13,11 +13,15 @@ public class Servidor {
     private Cliente cliente;
     private int CountClientes;
     private int DT;
+    private int tiempoEntrada;
+    private int tiempoTrabajado;
 
     public Servidor() {
         this.cliente = null;
         this.CountClientes = 0;
         this.DT = 0;
+        this.tiempoEntrada = 0;
+        this.tiempoTrabajado = 0;
     }
     
     public Cliente getCliente() {
@@ -41,6 +45,22 @@ public class Servidor {
 
     public void setDT(int DT) {
         this.DT = DT;
+    }
+
+    public int getTiempoEntrada() {
+        return tiempoEntrada;
+    }
+
+    public void setTiempoEntrada(int tiempoEntrada) {
+        this.tiempoEntrada = tiempoEntrada;
+    }
+
+    public int getTiempoTrabajado() {
+        return tiempoTrabajado;
+    }
+
+    public void setTiempoTrabajado(int tiempoTrabajado) {
+        this.tiempoTrabajado = tiempoTrabajado;
     }
 
 

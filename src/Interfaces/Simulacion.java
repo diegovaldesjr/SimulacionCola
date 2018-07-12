@@ -38,6 +38,8 @@ public class Simulacion extends javax.swing.JFrame {
     
     private ArrayList<Tiempo> tiemposEntrellegadas;
     private ArrayList<ArrayList> tiempoSalidas;
+    
+    private float W;
 
     /**
      * Creates new form Simulacion
@@ -227,6 +229,17 @@ public class Simulacion extends javax.swing.JFrame {
         calcularW();
         calcularWq();
         calcularTiempoHaceCola();
+        calcularUtilizacionServidor();
+        calcularLq();
+        calcularL();
+        
+        if(W > 15){
+            resultados.setjTextAreaOpciones("Los clientes estan esperando \nmas de 15 min.\nSe sugiere lo siguiente:\n\n"
+                    + "1- Contratar mas personal para \natender a mas clientes\nen un momento dado\n"
+                    + "2- Entrenar al personal para \nque disminuya los tiempos de servicio");
+        }else{
+            resultados.setjTextAreaOpciones("El comedor cumple con su objetivo\n los clientes esperan menos de 15 min");
+        }
     }
     
     public void calcularClientesNoEsperan(){
@@ -279,8 +292,35 @@ public class Simulacion extends javax.swing.JFrame {
         for(Estacion estacion: estaciones){
             cont += estacion.getW();
         }
+        W = cont /= EMaxima;
+        resultados.setJLW(W);
+    }
+    
+    public void calcularUtilizacionServidor(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.calcularUtilizacionServidor();
+        }
         cont /= EMaxima;
-        resultados.setJLW(cont);
+        resultados.setJLUtilizacionServidor(cont);
+    }
+    
+    public void calcularLq(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getLq();
+        }
+        cont /= EMaxima;
+        resultados.setJLLq(cont);
+    }
+    
+    public void calcularL(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getL();
+        }
+        cont /= EMaxima;
+        resultados.setJLL(cont);
     }
     
     /*****************************************************************************************************************************/
