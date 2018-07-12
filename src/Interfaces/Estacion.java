@@ -56,12 +56,11 @@ public class Estacion extends javax.swing.JPanel {
     
     private ArrayList<Tiempo> tiemposEntreSalidas;
     
-    private int W;
-    private int Wq;
-    private int Ws;
-    private int L;
-    private int Lq;
-    private int Ls;
+    private float W;
+    private float Wq;
+    private float tiempoPromedioHaceCola;
+    private float L;
+    private float Lq;
     
     
     /**
@@ -104,10 +103,9 @@ public class Estacion extends javax.swing.JPanel {
      
         W = 0;
         Wq = 0;
-        Ws = 0;
         L = 0;
         Lq = 0;
-        Ls = 0;
+        tiempoPromedioHaceCola = 0;
         
         initTablaEventos();
         initTablaClientes();
@@ -143,9 +141,8 @@ public class Estacion extends javax.swing.JPanel {
     public void initTablaResultados(){
         //Modelo para la tabla de resultados
         ModelResultados = new DefaultTableModel();
-        ModelResultados.addColumn("Tipo");
+        ModelResultados.addColumn("Descripcion");
         ModelResultados.addColumn("Resultado");
-        ModelResultados.addColumn("Parametro");
         this.tablaResultados.setModel(ModelResultados);
     }
     
@@ -241,6 +238,8 @@ public class Estacion extends javax.swing.JPanel {
             //Anuncia al cliente a entrar en el sistema
             AnunciarCliente(cliente);
             nClientes++;
+            
+            cliente.setEntrada(s.getTMm());
         }
         
         //Si algun servidor esta desocupado en la primera estacion
@@ -332,6 +331,9 @@ public class Estacion extends javax.swing.JPanel {
                 Cola.remove(0);
                 servidorAVaciar.setDT(s.getTMm() + cliente.getST());
                 menorDT = s.getTMm() + cliente.getST();
+                
+                Wq += (float) (s.getTMm()-cliente.getEntrada());
+                
                 Insertar(primeroEnCola, true);
             }else{
                 //Actualizar DT a infito para que llegue otro cliente en la siguiente iteracion
@@ -341,6 +343,7 @@ public class Estacion extends javax.swing.JPanel {
             AnunciarEvento("Salida", cliente);
             
             nClientes--;
+            W += (float) (s.getTMm()-cliente.getEntrada());
             s.avanzarCliente(cliente, NumeroEstacion);
             
             
@@ -396,9 +399,9 @@ public class Estacion extends javax.swing.JPanel {
         model.addRow(datos);
     }
     
-    public void AnunciarResultados(String tipo,String resultado, String parametro){
+    public void AnunciarResultados(String descripcion,String resultado){
         DefaultTableModel model = (DefaultTableModel) this.tablaResultados.getModel();
-        model.addRow(new String[]{tipo,resultado,parametro});
+        model.addRow(new String[]{descripcion,resultado});
     }
 
     /*****************************************************************************************************************************/
@@ -409,6 +412,22 @@ public class Estacion extends javax.swing.JPanel {
         JLEsperar.setText(String.format("%.2f",calcularProbEsperar())+"%");
         
         JLClientesNoEsperan.setText(String.valueOf(nClientesNoEspera));
+        
+        int cont = 1;
+        for(Servidor servidor: Servidores){
+            float porcentajeUtilizado = (float) (servidor.getCountClientes()*100)/nClientesServidos;
+            AnunciarResultados("Porcentaje utilizacion servidor " + cont++, String.format("%.2f",porcentajeUtilizado)+"%");
+        }
+        
+        AnunciarResultados("", "");
+        
+        calcularTiempoPromedioClientesHacenCola();
+        calcularWq();
+        calcularW();
+        
+        AnunciarResultados("Tiempo promedio de un cliente en el sistema", String.format("%.2f",W)+" min");
+        AnunciarResultados("Tiempo promedio de un cliente en cola", String.format("%.2f",Wq)+" min");
+        AnunciarResultados("Tiempo promedio de espera de un cliente que hace cola", String.format("%.2f",tiempoPromedioHaceCola)+" min");
     }
     
     public float calcularProbEsperar(){
@@ -418,6 +437,18 @@ public class Estacion extends javax.swing.JPanel {
     public void calcularTiempoAdicional(){
         if(ultimoTM > s.getMaxTMm())
             tiempoAdicional += ultimoTM-s.getMaxTMm();
+    }
+    
+    public void calcularWq(){
+        Wq = (float)(Wq/(nClientesServidos+Cola.size()));
+    }
+    
+    public void calcularTiempoPromedioClientesHacenCola(){
+        tiempoPromedioHaceCola = (float)(Wq/nClientesCola);
+    }
+    
+    public void calcularW(){
+        W = (float) (W/(nClientesServidos+Cola.size()));
     }
     
     /*****************************************************************************************************************************/
@@ -456,6 +487,26 @@ public class Estacion extends javax.swing.JPanel {
 
     public Cliente getEntrante() {
         return entrante;
+    }
+
+    public float getW() {
+        return W;
+    }
+
+    public float getWq() {
+        return Wq;
+    }
+
+    public float getL() {
+        return L;
+    }
+
+    public float getLq() {
+        return Lq;
+    }
+
+    public float getTiempoPromedioHaceCola() {
+        return tiempoPromedioHaceCola;
     }
     
     /**

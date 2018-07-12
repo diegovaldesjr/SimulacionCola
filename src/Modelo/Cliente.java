@@ -16,6 +16,7 @@ public class Cliente {
     
     private int IT;
     private int ST;
+    private int Entrada;
 
     static{
         CuentaCliente = 1;
@@ -26,6 +27,7 @@ public class Cliente {
         this.ST = ST;
 
         NumeroCliente = CuentaCliente++;
+        Entrada = 0;
         System.out.println("Cliente numero " + NumeroCliente + " " + IT + " " + ST);
     }
 
@@ -59,6 +61,14 @@ public class Cliente {
 
     public void setST(int ST) {
         this.ST = ST;
+    }
+
+    public int getEntrada() {
+        return Entrada;
+    }
+
+    public void setEntrada(int Entrada) {
+        this.Entrada = Entrada;
     }
 
     

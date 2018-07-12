@@ -223,6 +223,10 @@ public class Simulacion extends javax.swing.JFrame {
         calcularClientesNoEsperan();
         
         resultados.setJLNoAtendidos(ClientesNoAtendidos);
+        
+        calcularW();
+        calcularWq();
+        calcularTiempoHaceCola();
     }
     
     public void calcularClientesNoEsperan(){
@@ -250,6 +254,33 @@ public class Simulacion extends javax.swing.JFrame {
         }
         cont /= EMaxima;
         resultados.setJLTiempoAdicional(cont);
+    }
+    
+    public void calcularWq(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getWq();
+        }
+        cont /= EMaxima;
+        resultados.setJLWq(cont);
+    }
+    
+    public void calcularTiempoHaceCola(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getTiempoPromedioHaceCola();
+        }
+        cont /= EMaxima;
+        resultados.setJLHaceCola(cont);
+    }
+    
+    public void calcularW(){
+        float cont = 0;
+        for(Estacion estacion: estaciones){
+            cont += estacion.getW();
+        }
+        cont /= EMaxima;
+        resultados.setJLW(cont);
     }
     
     /*****************************************************************************************************************************/
